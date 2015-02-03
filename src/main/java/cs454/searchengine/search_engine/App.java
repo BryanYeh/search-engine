@@ -22,10 +22,12 @@ public class App {
 	public static String protocol;
 	
 	public static void main(String args[]) throws Exception {
-		URL url = new URL(args[0]);
+		Extractor.parseExample();
+		
+		URL url = new URL("https://www.google.com");
 		protocol = url.getProtocol();
 		domain = url.getProtocol() + "://" + url.getHost();
-		System.out.println("domain: " + domain);
+		//System.out.println("domain: " + domain);
 		Reader reader = new InputStreamReader((InputStream) url.getContent());
 		new ParserDelegator().parse(reader, new LinkPage(), true);
 	}
@@ -38,19 +40,19 @@ class LinkPage extends HTMLEditorKit.ParserCallback {
 			//System.out.println("ORIGINAL: " + a.getAttribute(HTML.Attribute.HREF));
 			if (a.getAttribute(HTML.Attribute.HREF) != null && !((String) a.getAttribute(HTML.Attribute.HREF)).startsWith("#")){
 				if(((String) a.getAttribute(HTML.Attribute.HREF)).startsWith(App.domain)){
-					System.out.println("Unchanged: " + a.getAttribute(HTML.Attribute.HREF));
+					//System.out.println("Unchanged: " + a.getAttribute(HTML.Attribute.HREF));
 				}
 				else if(((String) a.getAttribute(HTML.Attribute.HREF)).startsWith("/")){
-					System.out.println("Added domain: " + App.domain + a.getAttribute(HTML.Attribute.HREF));
+					//System.out.println("Added domain: " + App.domain + a.getAttribute(HTML.Attribute.HREF));
 				}
 				else if(((String) a.getAttribute(HTML.Attribute.HREF)).startsWith("http") && !((String) a.getAttribute(HTML.Attribute.HREF)).startsWith(App.domain)){
-					System.out.println("Not in domain: " + a.getAttribute(HTML.Attribute.HREF));
+					//System.out.println("Not in domain: " + a.getAttribute(HTML.Attribute.HREF));
 				}
 				else if(((String) a.getAttribute(HTML.Attribute.HREF)).startsWith("www.")){
-					System.out.println("Added protocol: " + App.protocol + a.getAttribute(HTML.Attribute.HREF));
+					//System.out.println("Added protocol: " + App.protocol + a.getAttribute(HTML.Attribute.HREF));
 				}
 				else{
-					System.out.println("Added domain: " + App.domain + "/" + a.getAttribute(HTML.Attribute.HREF));
+					//System.out.println("Added domain: " + App.domain + "/" + a.getAttribute(HTML.Attribute.HREF));
 				}
 				
 				// there could be more to watch out for
