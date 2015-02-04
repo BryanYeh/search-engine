@@ -8,7 +8,10 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.net.URL;
+import java.net.URLConnection;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 import javax.swing.text.MutableAttributeSet;
 import javax.swing.text.html.HTML;
@@ -18,18 +21,47 @@ import javax.swing.text.html.parser.ParserDelegator;
 public class App {
 	
 	public static ArrayList<String> links = new ArrayList<String>();
+	public static ArrayList<String> copylinks = new ArrayList<String>();
 	public static String domain;
 	public static String protocol;
+	public static int[] counter;
+	public static int depth = 0;
 	
-	public static void main(String args[]) throws Exception {
-		Extractor.parseExample();
+	
+	public static void main(String args[]) throws Exception  {
+		//Extractor.parseExample();
+		/**http://www.mkyong.com/java/how-to-get-http-response-header-in-java/**/
+		counter = new int[3];
+		crawl("http://www.calstatela.edu/");
 		
-		URL url = new URL("https://www.google.com");
+		while(copylinks.size()>0 && depth<3){
+			crawl(copylinks.remove(0));
+		}
+		//System.out.println(links.size());
+		
+		for(int i=0;i<links.size();i++){
+			System.out.println(links.get(i));
+		}
+	}
+	
+	public static void crawl(String urlString) throws Exception{
+		URL url = new URL(urlString);
+		
+		if(urlString.substring(urlString.length() - 1).equals("/")){
+			urlString = urlString.substring(0,urlString.length() - 1);
+		}
+		links.add(urlString);
 		protocol = url.getProtocol();
 		domain = url.getProtocol() + "://" + url.getHost();
-		//System.out.println("domain: " + domain);
+		
 		Reader reader = new InputStreamReader((InputStream) url.getContent());
 		new ParserDelegator().parse(reader, new LinkPage(), true);
+		
+		//for(int i=0;i<links.size();i++){
+		//	System.out.println(links.get(i));
+		//} 	
+		depth++;
+		//System.out.println("next depth: " + depth);
 	}
 }
 
@@ -37,25 +69,68 @@ class LinkPage extends HTMLEditorKit.ParserCallback {
 
 	public void handleStartTag(HTML.Tag t, MutableAttributeSet a, int pos) {
 		if (t == HTML.Tag.A) {
-			//System.out.println("ORIGINAL: " + a.getAttribute(HTML.Attribute.HREF));
+			
+			// href != null
+			// href starts with #
 			if (a.getAttribute(HTML.Attribute.HREF) != null && !((String) a.getAttribute(HTML.Attribute.HREF)).startsWith("#")){
-				if(((String) a.getAttribute(HTML.Attribute.HREF)).startsWith(App.domain)){
-					//System.out.println("Unchanged: " + a.getAttribute(HTML.Attribute.HREF));
-				}
-				else if(((String) a.getAttribute(HTML.Attribute.HREF)).startsWith("/")){
-					//System.out.println("Added domain: " + App.domain + a.getAttribute(HTML.Attribute.HREF));
-				}
-				else if(((String) a.getAttribute(HTML.Attribute.HREF)).startsWith("http") && !((String) a.getAttribute(HTML.Attribute.HREF)).startsWith(App.domain)){
-					//System.out.println("Not in domain: " + a.getAttribute(HTML.Attribute.HREF));
-				}
-				else if(((String) a.getAttribute(HTML.Attribute.HREF)).startsWith("www.")){
-					//System.out.println("Added protocol: " + App.protocol + a.getAttribute(HTML.Attribute.HREF));
-				}
-				else{
-					//System.out.println("Added domain: " + App.domain + "/" + a.getAttribute(HTML.Attribute.HREF));
+				String newURL = ((String) a.getAttribute(HTML.Attribute.HREF));
+				if(newURL.length()>0 && newURL.substring(newURL.length() - 1).equals("/")){
+					newURL = newURL.substring(0,newURL.length() - 1);
 				}
 				
-				// there could be more to watch out for
+				// href = /
+				if(newURL.equals("")){
+					if(!App.links.contains(App.domain)){
+						App.links.add(App.domain);
+						App.copylinks.add(App.domain);
+						//System.out.println(App.domain);
+					}
+				}
+				// href = domain
+				else if(newURL.equals(App.domain)){
+					if(!App.links.contains(App.domain)){
+						App.links.add(App.domain);
+						App.copylinks.add(App.domain);
+						//System.out.println(App.domain);
+					}
+				}
+				// href starts with /
+				else if(newURL.startsWith("/")){
+					String newLink = App.domain + newURL;
+					if(!App.links.contains(newLink)){
+						App.links.add(newLink);
+						App.copylinks.add(App.domain);
+						//System.out.println(App.domain);
+					}
+				}
+				// href starts with www.
+				else if(newURL.startsWith("www.")){
+					String newLink = App.protocol + newURL;
+					if(!App.links.contains(newLink)){
+						App.links.add(newLink);
+						App.copylinks.add(newLink);
+						//System.out.println(newLink);
+					}
+				}
+				// href = https/http
+				else if (newURL.startsWith("http")){
+					if(!App.links.contains(newURL)){
+						App.links.add(newURL);
+						App.copylinks.add(newURL);
+						//System.out.println(newURL);
+					}
+				}
+				// href = example.html
+				else{
+					String newLink = App.domain + "/" + newURL;
+					if(!App.links.contains(newLink)){
+						App.links.add(newLink);
+						App.copylinks.add(newLink);
+						//System.out.println(newLink);
+					}
+				}
+				
+				
 			}
 				
 			
