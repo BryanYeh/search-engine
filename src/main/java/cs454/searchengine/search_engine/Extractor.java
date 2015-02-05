@@ -6,9 +6,15 @@ import java.net.URL;
 
 import org.apache.tika.exception.TikaException;
 import org.apache.tika.metadata.Metadata;
+import org.apache.tika.mime.MediaType;
+import org.apache.tika.parser.AutoDetectParser;
 import org.apache.tika.parser.ParseContext;
+import org.apache.tika.parser.Parser;
 import org.apache.tika.parser.html.HtmlParser;
 import org.apache.tika.sax.BodyContentHandler;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 
@@ -22,25 +28,48 @@ public class Extractor {
 		 * http://stackoverflow.com/questions/6713927/extract-the-contenttext-of-a-url-using-tika
 		 * http://www.ibm.com/developerworks/opensource/tutorials/os-apache-tika/
 		 * http://stackoverflow.com/questions/5429814/how-can-i-use-the-html-parser-with-apache-tika-in-java-to-extract-all-html-tags
+		 * http://www.javaprogrammingforums.com/whats-wrong-my-code/34932-parse-any-file-using-auto-detect-parser-apache-tika-library.html
 		*/
-		URL inputURL = new URL("http://www.yahoo.com");
+		URL inputURL = new URL("http://www.google.com");
 		InputStream input = inputURL.openStream();
-		HtmlParser parser = new HtmlParser();
-		ParseContext parseC = new ParseContext();
+		AutoDetectParser parser = new AutoDetectParser();
 		Metadata metaD = new Metadata();
 		ContentHandler bodyCH = new BodyContentHandler();
 		//TeeContentHandler teeCH = new TeeContentHandler();
 		
 		try {
-		parser.parse(input, bodyCH, metaD, parseC);
+		parser.parse(input, bodyCH, metaD);
 		
-		System.out.println("Number of Metadata: " + metaD.size());
+		System.out.println("Number of Metadata Tags: " + metaD.size());
 		for (String eachName: metaD.names()) {
 			System.out.println(eachName + ": " + metaD.get(eachName));
+//			System.out.println(metaD.get(Metadata.CONTENT_TYPE));
+//			System.out.println(metaD.get(Metadata.CONTENT_DISPOSITION));
+//			System.out.println(metaD.get(Metadata.CONTENT_ENCODING));
+//			System.out.println(metaD.get(Metadata.CONTENT_LANGUAGE));
+//			System.out.println(metaD.get(Metadata.CONTENT_LENGTH));
+//			System.out.println(metaD.get(Metadata.CONTENT_LOCATION));
+//			System.out.println(metaD.get(Metadata.CONTENT_MD5));
+//			System.out.println(metaD.get(Metadata.LAST_MODIFIED));
+//			System.out.println(metaD.get(Metadata.LOCATION));
 			//System.out.println(metaD.get(eachName));
 		}
 		
 		input.close();
+		
+		//Source: http://jsoup.org/cookbook/extracting-data/working-with-urls
+		//http://jsoup.org/cookbook/extracting-data/attributes-text-html
+		Document doc = Jsoup.connect("http://docs.oracle.com/javase/tutorial/java/javaOO/").get();
+
+		Element link = doc.select("a").first();
+		System.out.println("Entire link tag: " + link);
+		System.out.println("Absolute URL: " + link.absUrl("href"));
+		System.out.println("URL of href: " + link.attr("abs:href"));
+		System.out.println("Anchor Text: " + link.text());
+		//System.out.println(doc.body().text());
+		System.out.println("Title of URL: " + doc.title());
+		System.out.println();
+		
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

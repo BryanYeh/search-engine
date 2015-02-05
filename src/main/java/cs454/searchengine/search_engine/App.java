@@ -22,6 +22,7 @@ public class App {
 	public static String protocol;
 	
 	public static void main(String args[]) throws Exception {
+		//http://stackoverflow.com/questions/6576855/java-how-to-access-methods-from-another-class
 		Extractor.parseExample();
 		
 		URL url = new URL("https://www.google.com");
