@@ -4,9 +4,11 @@ package cs454.searchengine.search_engine;
  * http://www.java2s.com/Tutorial/Java/0320__Network/Getallhyperlinksfromawebpage.htm
  **/
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
@@ -29,7 +31,7 @@ public class App {
 	
 	public static void main(String args[]) throws Exception  {
 		//http://stackoverflow.com/questions/6576855/java-how-to-access-methods-from-another-class
-		Extractor.parseExample();
+		//Extractor.parseExample();
 		/**http://www.mkyong.com/java/how-to-get-http-response-header-in-java/**/
 		counter = new int[3];
 		crawl("http://www.calstatela.edu/");
@@ -40,12 +42,18 @@ public class App {
 		//System.out.println(links.size());
 		
 		for(int i=0;i<links.size();i++){
-			System.out.println(links.get(i));
+			System.out.println(i + ": " + links.get(i));
 		}
 	}
 	
-	public static void crawl(String urlString) throws Exception{
-		URL url = new URL(urlString);
+	public static void crawl(String urlString){
+		URL url = null;
+		try {
+			url = new URL(urlString);
+		} catch (MalformedURLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
 		if(urlString.substring(urlString.length() - 1).equals("/")){
 			urlString = urlString.substring(0,urlString.length() - 1);
@@ -54,11 +62,23 @@ public class App {
 		protocol = url.getProtocol();
 		domain = url.getProtocol() + "://" + url.getHost();
 		
-		Reader reader = new InputStreamReader((InputStream) url.getContent());
-		new ParserDelegator().parse(reader, new LinkPage(), true);
+		Reader reader = null;
+		try {
+			reader = new InputStreamReader((InputStream) url.getContent());
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
-		//for(int i=0;i<links.size();i++){
-		//	System.out.println(links.get(i));
+		try {
+			new ParserDelegator().parse(reader, new LinkPage(), true);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		//for(int i=0;i<copylinks.size();i++){
+		//	System.out.println(copylinks.get(i));
 		//} 	
 		depth++;
 		//System.out.println("next depth: " + depth);
@@ -69,10 +89,10 @@ class LinkPage extends HTMLEditorKit.ParserCallback {
 
 	public void handleStartTag(HTML.Tag t, MutableAttributeSet a, int pos) {
 		if (t == HTML.Tag.A) {
-			
+			//System.out.println(a.getAttribute(HTML.Attribute.HREF));
 			// href != null
 			// href starts with #
-			if (a.getAttribute(HTML.Attribute.HREF) != null && !((String) a.getAttribute(HTML.Attribute.HREF)).startsWith("#")){
+			if (a.getAttribute(HTML.Attribute.HREF) != null && !((String) a.getAttribute(HTML.Attribute.HREF)).startsWith("#") && !((String) a.getAttribute(HTML.Attribute.HREF)).startsWith("javascript:void")){
 				String newURL = ((String) a.getAttribute(HTML.Attribute.HREF));
 				if(newURL.length()>0 && newURL.substring(newURL.length() - 1).equals("/")){
 					newURL = newURL.substring(0,newURL.length() - 1);
@@ -83,7 +103,7 @@ class LinkPage extends HTMLEditorKit.ParserCallback {
 					if(!App.links.contains(App.domain)){
 						App.links.add(App.domain);
 						App.copylinks.add(App.domain);
-						//System.out.println(App.domain);
+						//System.out.println("/: " + App.domain);
 					}
 				}
 				// href = domain
@@ -91,7 +111,7 @@ class LinkPage extends HTMLEditorKit.ParserCallback {
 					if(!App.links.contains(App.domain)){
 						App.links.add(App.domain);
 						App.copylinks.add(App.domain);
-						//System.out.println(App.domain);
+						//System.out.println("domain: " + App.domain);
 					}
 				}
 				// href starts with /
@@ -99,8 +119,8 @@ class LinkPage extends HTMLEditorKit.ParserCallback {
 					String newLink = App.domain + newURL;
 					if(!App.links.contains(newLink)){
 						App.links.add(newLink);
-						App.copylinks.add(App.domain);
-						//System.out.println(App.domain);
+						App.copylinks.add(newLink);
+						//System.out.println("/start: " + newLink);
 					}
 				}
 				// href starts with www.
@@ -109,7 +129,7 @@ class LinkPage extends HTMLEditorKit.ParserCallback {
 					if(!App.links.contains(newLink)){
 						App.links.add(newLink);
 						App.copylinks.add(newLink);
-						//System.out.println(newLink);
+						//System.out.println("www: " + newLink);
 					}
 				}
 				// href = https/http
@@ -117,7 +137,7 @@ class LinkPage extends HTMLEditorKit.ParserCallback {
 					if(!App.links.contains(newURL)){
 						App.links.add(newURL);
 						App.copylinks.add(newURL);
-						//System.out.println(newURL);
+						//System.out.println("http: " + newURL);
 					}
 				}
 				// href = example.html
@@ -126,7 +146,7 @@ class LinkPage extends HTMLEditorKit.ParserCallback {
 					if(!App.links.contains(newLink)){
 						App.links.add(newLink);
 						App.copylinks.add(newLink);
-						//System.out.println(newLink);
+						//System.out.println("example.html: " + newLink);
 					}
 				}
 				
