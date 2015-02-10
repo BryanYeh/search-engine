@@ -27,7 +27,7 @@
 	<dependency>
 		<groupId>org.apache.tika</groupId>
 		<artifactId>tika-core</artifactId>
-		<version>1.0</version>
+		<version>1.7</version>
 	</dependency>
     
     <!-- http://blog.jeroenreijn.com/2010/04/metadata-extraction-with-apache-tika.html -->
@@ -35,7 +35,7 @@
 	<dependency>
 		<groupId>org.apache.tika</groupId>
 		<artifactId>tika-parsers</artifactId>
-		<version>0.6</version>
+		<version>1.7</version>
 	</dependency>
 	
 		<dependency>

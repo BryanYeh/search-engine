@@ -29,12 +29,12 @@ public class App {
 	public static int[] counter;
 	public static int depth = 0;
 	
-	public static void main(String args[]) throws Exception  {
+	public static void main(String args[]){
 		//http://stackoverflow.com/questions/6576855/java-how-to-access-methods-from-another-class
 		//Extractor.parseExample();
 		/**http://www.mkyong.com/java/how-to-get-http-response-header-in-java/**/
 		counter = new int[3];
-		crawl("http://www.calstatela.edu/");
+		crawl("http://www.google.com");
 		
 		while(copylinks.size()>0 && depth<3){
 			crawl(copylinks.remove(0));
@@ -43,6 +43,7 @@ public class App {
 		
 		for(int i=0;i<links.size();i++){
 			System.out.println(i + ": " + links.get(i));
+			Extractor.parseExample(links.get(i));
 		}
 	}
 	
@@ -92,7 +93,9 @@ class LinkPage extends HTMLEditorKit.ParserCallback {
 			//System.out.println(a.getAttribute(HTML.Attribute.HREF));
 			// href != null
 			// href starts with #
-			if (a.getAttribute(HTML.Attribute.HREF) != null && !((String) a.getAttribute(HTML.Attribute.HREF)).startsWith("#") && !((String) a.getAttribute(HTML.Attribute.HREF)).startsWith("javascript:void")){
+			if (a.getAttribute(HTML.Attribute.HREF) != null && 
+					!((String) a.getAttribute(HTML.Attribute.HREF)).startsWith("#") && 
+					!((String) a.getAttribute(HTML.Attribute.HREF)).startsWith("javascript:void")){
 				String newURL = ((String) a.getAttribute(HTML.Attribute.HREF));
 				if(newURL.length()>0 && newURL.substring(newURL.length() - 1).equals("/")){
 					newURL = newURL.substring(0,newURL.length() - 1);

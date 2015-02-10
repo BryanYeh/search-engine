@@ -2,6 +2,7 @@ package cs454.searchengine.search_engine;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.MalformedURLException;
 import java.net.URL;
 
 import org.apache.tika.exception.TikaException;
@@ -19,7 +20,7 @@ import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 
 public class Extractor {
-	public static void parseExample() throws IOException, SAXException, TikaException {
+	public static void parseExample(String url){
 		/* Sources:
 		 * http://chrisjordan.ca/post/15219674437/parsing-html-with-apache-tika
 		 * Source: http://www.infoq.com/news/2011/12/tika-10
@@ -30,15 +31,35 @@ public class Extractor {
 		 * http://stackoverflow.com/questions/5429814/how-can-i-use-the-html-parser-with-apache-tika-in-java-to-extract-all-html-tags
 		 * http://www.javaprogrammingforums.com/whats-wrong-my-code/34932-parse-any-file-using-auto-detect-parser-apache-tika-library.html
 		*/
-		URL inputURL = new URL("http://www.google.com");
-		InputStream input = inputURL.openStream();
+		URL inputURL = null;
+		try {
+			inputURL = new URL(url);
+		} catch (MalformedURLException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		InputStream input = null;
+		try {
+			input = inputURL.openStream();
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
 		AutoDetectParser parser = new AutoDetectParser();
 		Metadata metaD = new Metadata();
 		ContentHandler bodyCH = new BodyContentHandler();
 		//TeeContentHandler teeCH = new TeeContentHandler();
 		
 		try {
-		parser.parse(input, bodyCH, metaD);
+		try {
+			parser.parse(input, bodyCH, metaD);
+		} catch (SAXException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (TikaException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
 		System.out.println("Number of Metadata Tags: " + metaD.size());
 		for (String eachName: metaD.names()) {
@@ -59,7 +80,7 @@ public class Extractor {
 		
 		//Source: http://jsoup.org/cookbook/extracting-data/working-with-urls
 		//http://jsoup.org/cookbook/extracting-data/attributes-text-html
-		Document doc = Jsoup.connect("http://docs.oracle.com/javase/tutorial/java/javaOO/").get();
+		Document doc = Jsoup.connect(url).get();
 
 		Element link = doc.select("a").first();
 		System.out.println("Entire link tag: " + link);
