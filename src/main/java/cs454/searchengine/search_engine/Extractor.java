@@ -1,14 +1,12 @@
 package cs454.searchengine.search_engine;
 
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.URLConnection;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.apache.tika.exception.TikaException;
 import org.apache.tika.metadata.Metadata;
@@ -21,12 +19,19 @@ import org.apache.tika.sax.BodyContentHandler;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
-import org.jsoup.select.Elements;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 
 public class Extractor {
-	public static void parseExample(String urlString) throws IOException {
+
+	public static void main(String args[]) throws IOException, SAXException, TikaException {
+		Extractor ex = new Extractor();
+		
+		ex.parseExample("http://www.google.com");
+
+	}
+
+	public Map<String,String> parseExample(String url) {
 		/*
 		 * Sources:
 		 * http://chrisjordan.ca/post/15219674437/parsing-html-with-apache-tika
@@ -45,36 +50,62 @@ public class Extractor {
 		 * http
 		 * ://www.javaprogrammingforums.com/whats-wrong-my-code/34932-parse-any
 		 * -file-using-auto-detect-parser-apache-tika-library.html
-		 * http://www.javatpoint.com/jsoup-example-print-meta-data-of-an-url
-		 * http://stackoverflow.com/questions/11656064/how-to-get-page-meta-title-description-images-like-facebook-attach-url-using
 		 */
-		
+		URL inputURL = null;
+		Map<String, String> metaDataMap = new HashMap<String, String>();
 
-		Document doc = Jsoup.connect(urlString).ignoreHttpErrors(true).timeout(0).get();
-		System.out.println("Title of URL: " + doc.title());
-		for(Element meta : doc.select("meta")) {
-		    System.out.println("Name: " + meta.attr("name") + " Property: " + meta.attr("property") + " - Content: " + meta.attr("content"));
+		try {
+			inputURL = new URL(url);
+		} catch (MalformedURLException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
 		}
-		
-		System.out.println();
-		
-		Elements links = doc.select("a[href]");
-		if (!links.isEmpty()) {
-			for (int i = 0; i < links.size(); i++) {
-				Element link = links.get(i);
-				System.out.println("Absolute URL: " + link.absUrl("href"));
-				System.out.println("URL of href:" + link.attr("abs:href"));
-				System.out.println("Anchor Text: " + link.text());
-				System.out.println();
+		InputStream input = null;
+		try {
+			input = inputURL.openStream();
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		Parser parser = new HtmlParser();
+		Metadata metaD = new Metadata();
+		ContentHandler bodyCH = new BodyContentHandler();
+		// TeeContentHandler teeCH = new TeeContentHandler();
+
+		try {
+			try {
+				parser.parse(input, bodyCH, metaD, new ParseContext());
+			} catch (SAXException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (TikaException e) {
+				e.printStackTrace();
 			}
+
+			System.out.println("Number of Metadata Tags: " + metaD.size());
+
+			for (String eachName : metaD.names()) {
+				System.out.println(eachName + ": " + metaD.get(eachName));
+				metaDataMap.put(eachName, metaD.get(eachName));
+
+				// System.out.println(metaD.get(Metadata.CONTENT_TYPE));
+				// System.out.println(metaD.get(Metadata.CONTENT_DISPOSITION));
+				// System.out.println(metaD.get(Metadata.CONTENT_ENCODING));
+				// System.out.println(metaD.get(Metadata.CONTENT_LANGUAGE));
+				// System.out.println(metaD.get(Metadata.CONTENT_LENGTH));
+				// System.out.println(metaD.get(Metadata.CONTENT_LOCATION));
+				// System.out.println(metaD.get(Metadata.CONTENT_MD5));
+				// System.out.println(metaD.get(Metadata.LAST_MODIFIED));
+				// System.out.println(metaD.get(Metadata.LOCATION));
+				// System.out.println(metaD.get(eachName));
+			}
+
+			input.close();
+
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
-		System.out.println("DONE WITH: " + urlString);
-		System.out
-				.println("------------------------------------------------------------------");
-		System.out.println();
-		
-		
 
+		return metaDataMap;
 	}
-
 }

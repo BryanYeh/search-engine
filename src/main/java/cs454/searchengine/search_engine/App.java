@@ -35,16 +35,19 @@ public class App {
 		/**http://www.mkyong.com/java/how-to-get-http-response-header-in-java/**/
 		counter = new int[3];
 		crawl("http://www.google.com");
-		
-		while(copylinks.size()>0 && depth<3){
-			crawl(copylinks.remove(0));
-		}
-		//System.out.println(links.size());
-		
-		for(int i=0;i<links.size();i++){
-			System.out.println(i + ": " + links.get(i));
-			Extractor.parseExample(links.get(i));
-		}
+//		
+//		while(copylinks.size()>0 && depth<3){
+//			String currentLink = copylinks.remove(0);
+//			crawl(currentLink);
+//			Extractor.parseExample(currentLink);
+//			
+//		}
+//		//System.out.println(links.size());
+//		
+//		for(int i=0;i<links.size();i++){
+//			System.out.println(i + ": " + links.get(i));
+//			Extractor.parseExample(links.get(i));
+//		}
 	}
 	
 	public static void crawl(String urlString){
@@ -160,4 +163,4 @@ class LinkPage extends HTMLEditorKit.ParserCallback {
 		}
 	}
 
-}
+} 
