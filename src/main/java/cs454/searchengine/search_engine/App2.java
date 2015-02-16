@@ -4,8 +4,6 @@ package cs454.searchengine.search_engine;
  * http://www.java2s.com/Tutorial/Java/0320__Network/Getallhyperlinksfromawebpage.htm
  **/
 
-import java.io.File;
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -13,8 +11,6 @@ import java.util.Map;
 import java.util.Queue;
 import java.util.Set;
 
-import org.codehaus.jackson.JsonGenerationException;
-import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
 
 public class App2 {
@@ -24,6 +20,7 @@ public class App2 {
 		// Initialize Crawler & Extractor
 		Crawler crawler = new Crawler();
 		Extractor extr = new Extractor();
+		Storage saving = new Storage(); 
 		ObjectMapper obMap = new ObjectMapper();
 		Map<String, Map<String,String>> linkMap = new HashMap<String, Map<String, String>>();
 
@@ -35,24 +32,13 @@ public class App2 {
 		int countNextDepth;
 		int countCurrDepth = 0;
 		String currentURL = "http://www.calstatela.edu";
-		File jsonFile = new File("metadata.json");
 		
-		// initial extraction
-		try {
-			obMap.writeValue(jsonFile, extr.parseExample(currentURL));
-		} catch (JsonGenerationException e) {
-			e.printStackTrace();
-		} catch (JsonMappingException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-			
-		}
+		//initial extraction
+		saving.store(obMap, currentURL);
 
 		// maxDepth = Integer.parseInt(args[1]);
 		links.addAll(crawler.crawl(currentURL));
 		countNextDepth = links.size();
-		;
 		linksQueue.addAll(links);
 		depth++;
 
@@ -76,25 +62,13 @@ public class App2 {
 					try {
 						metadataMap = extr.parseExample(currentURL);
 					} catch (Exception e1) {
-						// TODO Auto-generated catch block
 						e1.printStackTrace();
 					}
 					linkMap.put(currentURL, metadataMap);
 					System.out.print(metadataMap.toString());
 					
-					try {
-						obMap.writeValue(jsonFile, linkMap);
-					} catch (JsonGenerationException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					} catch (JsonMappingException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					} catch (IOException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-
+					//saving links to metadata
+					saving.store2(obMap, linkMap);
 			}
 			linksQueue.addAll(currentDepth);
 			links.addAll(currentDepth);
