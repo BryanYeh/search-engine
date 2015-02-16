@@ -34,7 +34,7 @@ public class App2 {
 		int depth = 0;
 		int countNextDepth;
 		int countCurrDepth = 0;
-		String currentURL = "http://espn.go.com";
+		String currentURL = "http://www.calstatela.edu";
 		File jsonFile = new File("metadata.json");
 		
 		// initial extraction
