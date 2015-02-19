@@ -4,6 +4,7 @@ package cs454.searchengine.search_engine;
  * http://www.java2s.com/Tutorial/Java/0320__Network/Getallhyperlinksfromawebpage.htm
  **/
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -16,7 +17,7 @@ import org.codehaus.jackson.map.ObjectMapper;
 public class App2 {
 	
 	public static void main(String args[]) {
-
+		
 		// Initialize Crawler & Extractor
 		Crawler crawler = new Crawler();
 		Extractor extr = new Extractor();
@@ -33,48 +34,56 @@ public class App2 {
 		int countCurrDepth = 0;
 		String currentURL = "http://www.calstatela.edu";
 		
-		//initial extraction
-		saving.store(obMap, currentURL);
-
-		// maxDepth = Integer.parseInt(args[1]);
-		links.addAll(crawler.crawl(currentURL));
-		countNextDepth = links.size();
-		linksQueue.addAll(links);
-		depth++;
-
-		Set<String> currentDepth = new HashSet<String>();
-
-		while (depth < maxDepth) {
-			countCurrDepth = 0;
-			currentDepth.clear();
-
-			while (countNextDepth > 0 && !linksQueue.isEmpty()) {
-				currentURL = linksQueue.remove();
-				if (!currentURL.isEmpty()) {
-					currentDepth.addAll(crawler.crawl(currentURL));
-					countNextDepth--;
-					countCurrDepth += currentDepth.size();
-				}
-
-					System.out.println("ERROR URL: " + currentURL);
-//					CrawledLink currentLink = Extractor2.parseExample(currentURL);
-					Map<String, String> metadataMap = new HashMap<String, String>();
-					try {
-						metadataMap = extr.parseExample(currentURL);
-					} catch (Exception e1) {
-						e1.printStackTrace();
-					}
-					linkMap.put(currentURL, metadataMap);
-					System.out.print(metadataMap.toString());
-					
-					//saving links to metadata
-					saving.store2(obMap, linkMap);
-			}
-			linksQueue.addAll(currentDepth);
-			links.addAll(currentDepth);
-			countNextDepth = countCurrDepth;
-			depth++;
+		//TESTING EXTRACTOR
+		try {
+			extr.parseFiles();
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
-		System.out.println("NUMBER OF LINKS: " + links.size());
+		
+		
+//		//initial extraction
+//		saving.store(obMap, currentURL);
+//
+//		// maxDepth = Integer.parseInt(args[1]);
+//		links.addAll(crawler.crawl(currentURL));
+//		countNextDepth = links.size();
+//		linksQueue.addAll(links);
+//		depth++;
+//
+//		Set<String> currentDepth = new HashSet<String>();
+//
+//		while (depth < maxDepth) {
+//			countCurrDepth = 0;
+//			currentDepth.clear();
+//
+//			while (countNextDepth > 0 && !linksQueue.isEmpty()) {
+//				currentURL = linksQueue.remove();
+//				if (!currentURL.isEmpty()) {
+//					currentDepth.addAll(crawler.crawl(currentURL));
+//					countNextDepth--;
+//					countCurrDepth += currentDepth.size();
+//				}
+//
+//					System.out.println("ERROR URL: " + currentURL);
+////					CrawledLink currentLink = Extractor2.parseExample(currentURL);
+//					Map<String, String> metadataMap = new HashMap<String, String>();
+//					try {
+//						metadataMap = extr.parseExample(currentURL);
+//					} catch (Exception e1) {
+//						e1.printStackTrace();
+//					}
+//					linkMap.put(currentURL, metadataMap);
+//					System.out.print(metadataMap.toString());
+//					
+//					//saving links to metadata
+//					saving.store2(obMap, linkMap);
+//			}
+//			linksQueue.addAll(currentDepth);
+//			links.addAll(currentDepth);
+//			countNextDepth = countCurrDepth;
+//			depth++;
+//		}
+//		System.out.println("NUMBER OF LINKS: " + links.size());
 	}
 }

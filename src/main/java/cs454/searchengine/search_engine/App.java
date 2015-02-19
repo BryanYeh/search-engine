@@ -10,10 +10,7 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.URLConnection;
 import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 
 import javax.swing.text.MutableAttributeSet;
 import javax.swing.text.html.HTML;

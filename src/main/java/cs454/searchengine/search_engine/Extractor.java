@@ -1,7 +1,11 @@
 package cs454.searchengine.search_engine;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashMap;
@@ -9,21 +13,26 @@ import java.util.Map;
 
 import org.apache.tika.exception.TikaException;
 import org.apache.tika.metadata.Metadata;
+import org.apache.tika.parser.AutoDetectParser;
 import org.apache.tika.parser.ParseContext;
 import org.apache.tika.parser.Parser;
 import org.apache.tika.parser.html.HtmlParser;
 import org.apache.tika.sax.BodyContentHandler;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 
 public class Extractor {
 
-	public static void main(String args[]) throws IOException, SAXException, TikaException {
-		Extractor ex = new Extractor();
-		
-		ex.parseExample("http://www.google.com");
-
-	}
+//	public static void main(String args[]) throws IOException, SAXException, TikaException {
+//		Extractor ex = new Extractor();
+//		
+//		ex.parseExample("http://www.google.com");
+//
+//	}
 
 	public Map<String,String> parseExample(String url) {
 		/*
@@ -44,6 +53,7 @@ public class Extractor {
 		 * http
 		 * ://www.javaprogrammingforums.com/whats-wrong-my-code/34932-parse-any
 		 * -file-using-auto-detect-parser-apache-tika-library.html
+		 * 
 		 */
 		URL inputURL = null;
 		Map<String, String> metaDataMap = new HashMap<String, String>();
@@ -51,14 +61,12 @@ public class Extractor {
 		try {
 			inputURL = new URL(url);
 		} catch (MalformedURLException e1) {
-			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
 		InputStream input = null;
 		try {
 			input = inputURL.openStream();
 		} catch (IOException e1) {
-			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
 		Parser parser = new HtmlParser();
@@ -70,7 +78,6 @@ public class Extractor {
 			try {
 				parser.parse(input, bodyCH, metaD, new ParseContext());
 			} catch (SAXException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			} catch (TikaException e) {
 				e.printStackTrace();
@@ -101,5 +108,71 @@ public class Extractor {
 		}
 
 		return metaDataMap;
+	}
+	
+	public void parseFiles() throws IOException {
+		/**
+		 * Source:
+		 * http://stackoverflow.com/questions/17101276/java-download-all-files-and-folders-in-a-directory
+		 * http://stackoverflow.com/questions/3024002/how-to-create-a-folder-in-java
+		 * http://stackoverflow.com/questions/9658297/java-how-to-create-a-file-in-a-directory-using-relative-path
+		 * http://www.java2s.com/Tutorial/Java/0180__File/Removefileordirectory.htm
+		 * http://stackoverflow.com/questions/4875064/jsoup-how-to-get-an-images-absolute-url
+		 * http://www.avajava.com/tutorials/lessons/how-do-i-save-an-image-from-a-url-to-a-file.html
+		 * 
+		 */
+		try {
+			URL url = new URL("http://www.google.com");
+		    Document doc = Jsoup.connect("http://www.google.com").get();
+		    //System.out.println(doc.html());
+		    if (doc.html().contains(".gif")) {
+		    	Element image = doc.select("img").first();
+		    	String imgUrl = image.absUrl("src");
+		    	String imgSaveFile = imgUrl;
+		    	
+		    	URL imgURL2 = new URL(imgUrl);
+		    	InputStream is = url.openStream();
+				OutputStream os = new FileOutputStream(imgUrl);
+
+				byte[] b = new byte[2048];
+				int length;
+
+				while ((length = is.read(b)) != -1) {
+					os.write(b, 0, length);
+				}
+
+				is.close();
+				os.close();
+		    	
+		    	
+		    	System.out.println(imgUrl);
+		    	
+		    }
+		    
+		    File folder = new File("randomTestFolder");
+		    try{
+		    	if(folder.mkdir()) { 
+		    		System.out.println("Directory Created");
+		    	} else {
+		    		System.out.println("Directory is not created");
+		    	}
+		    } catch(Exception e){
+		    	e.printStackTrace();
+		    }
+		    
+		    if (folder.isDirectory()) {
+		    	//folder.deleteOnExit();
+		    	//System.out.println("Folder deleted.");
+		    }
+		    
+		    
+//		    Elements links = doc.getElementsByTag("a");
+//		    for (Element link : links) {
+//		        System.out.println(link.attr("href") + " - " + link.text());
+//		    }
+			
+		} catch (MalformedURLException e) {
+			e.printStackTrace();
+		}
 	}
 }
