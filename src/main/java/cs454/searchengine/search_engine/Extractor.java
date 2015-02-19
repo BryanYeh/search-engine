@@ -25,6 +25,8 @@ import org.jsoup.select.Elements;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 
+import com.uwyn.jhighlight.tools.FileUtils;
+
 public class Extractor {
 
 //	public static void main(String args[]) throws IOException, SAXException, TikaException {
@@ -119,20 +121,34 @@ public class Extractor {
 		 * http://www.java2s.com/Tutorial/Java/0180__File/Removefileordirectory.htm
 		 * http://stackoverflow.com/questions/4875064/jsoup-how-to-get-an-images-absolute-url
 		 * http://www.avajava.com/tutorials/lessons/how-do-i-save-an-image-from-a-url-to-a-file.html
+		 * http://stackoverflow.com/questions/3987921/not-able-to-delete-the-directory-through-java
+		 * http://stackoverflow.com/questions/3987921/not-able-to-delete-the-directory-through-java
 		 * 
 		 */
+		
+	    File folder = new File("randomTestFolder");
+	    try{
+	    	if(folder.mkdir()) { 
+	    		System.out.println("Directory Created");
+	    	} else {
+	    		System.out.println("Directory is not created");
+	    	}
+	    } catch(Exception e){
+	    	e.printStackTrace();
+	    }
+		
 		try {
-			URL url = new URL("http://www.google.com");
 		    Document doc = Jsoup.connect("http://www.google.com").get();
 		    //System.out.println(doc.html());
-		    if (doc.html().contains(".gif")) {
+		    if (doc.html().contains("img")) {
 		    	Element image = doc.select("img").first();
-		    	String imgUrl = image.absUrl("src");
-		    	String imgSaveFile = imgUrl;
+		    	String ImgUrl = image.absUrl("src");
+		    	String saveImgUrl = image.absUrl("alt");
+		    	System.out.println(image);
 		    	
-		    	URL imgURL2 = new URL(imgUrl);
-		    	InputStream is = url.openStream();
-				OutputStream os = new FileOutputStream(imgUrl);
+		    	URL imgURL2 = new URL(ImgUrl);
+		    	InputStream is = imgURL2.openStream();
+				OutputStream os = new FileOutputStream(folder + "\\" + saveImgUrl + ".gif");
 
 				byte[] b = new byte[2048];
 				int length;
@@ -143,36 +159,29 @@ public class Extractor {
 
 				is.close();
 				os.close();
-		    	
-		    	
-		    	System.out.println(imgUrl);
-		    	
 		    }
 		    
-		    File folder = new File("randomTestFolder");
-		    try{
-		    	if(folder.mkdir()) { 
-		    		System.out.println("Directory Created");
-		    	} else {
-		    		System.out.println("Directory is not created");
-		    	}
-		    } catch(Exception e){
-		    	e.printStackTrace();
+		    if (folder.exists() && folder.isDirectory()) {
+		    	Boolean d = deleteDirectory(folder);
+		    	System.out.println("Folder deleted: " + d);
 		    }
-		    
-		    if (folder.isDirectory()) {
-		    	//folder.deleteOnExit();
-		    	//System.out.println("Folder deleted.");
-		    }
-		    
-		    
-//		    Elements links = doc.getElementsByTag("a");
-//		    for (Element link : links) {
-//		        System.out.println(link.attr("href") + " - " + link.text());
-//		    }
-			
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
 		}
 	}
+	
+	static public boolean deleteDirectory(File path) {
+	    if (path.exists()) {
+	        File[] files = path.listFiles();
+	        for (int i = 0; i < files.length; i++) {
+	            if (files[i].isDirectory()) {
+	                deleteDirectory(files[i]);
+	            } else {
+	                files[i].delete();
+	            }
+	        }
+	    }
+	    return (path.delete());
+	}
+	
 }
