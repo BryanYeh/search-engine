@@ -23,14 +23,7 @@ public class Crawler {
 		try {
 			doc = Jsoup.connect(urlString).ignoreHttpErrors(true).get();
 			Elements links = doc.select("a[href]");
-			Elements pdf = doc.select("a[href$=.pdf]");
-			Elements docFiles = doc.select("a[href$=.doc]");
-			Elements docxFiles = doc.select("a[href$=.docx]");
-			Elements excelFiles = doc.select("a[href$=.xls]");
-			Elements excelXFiles = doc.select("a[href$=.xlsx]");
-			Elements ppt = doc.select("a[href$=.ppt]");
-			Elements pptx = doc.select("a[href$=.pptx]");
-			Elements mp3 = doc.select("a[href$=.mp3]");
+			Elements docFiles = doc.select("a[href~=(?i).(doc|ppt|pdf|xls|mp3|png|gif|bmp|tiff|jpg|jpeg|txt(?x)$)]");
 			
 			Elements files = doc.select("[src]");
 	        
@@ -38,9 +31,6 @@ public class Crawler {
 	        	linkSet.add(e.attr("abs:href"));
 	        }
 	        
-	        for(Element e: pdf){
-	        	importSet.add(e.attr("abs:href"));
-	        }
 	        for(Element e: docFiles){
 	        	importSet.add(e.attr("abs:href"));
 	        }
@@ -91,7 +81,9 @@ public class Crawler {
 	
 	
 	public static void main(String args[]){
+		//new Crawler().crawl("https://www.washington.edu/doit/programs/accesscollege/faculty-room/resources/examples-powerpoint-presentations");
 		new Crawler().crawl("http://www.calstatela.edu/ecst/cs/student-handbook");
+		//new Crawler().crawl("http://www.noiseaddicts.com/free-samples-mp3/?id=280&desc=American Bison");
 
 	}
 }
