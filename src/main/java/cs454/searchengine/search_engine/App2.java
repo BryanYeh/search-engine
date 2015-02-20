@@ -25,6 +25,7 @@ public class App2 {
 
 		// Initialize local variables
 		Set<String> links = new HashSet<String>();
+		Set<String> links2 = new HashSet<String>();
 		Queue<String> linksQueue = new LinkedList<String>();
 		int maxDepth = 2;
 		int depth = 0;
@@ -34,27 +35,31 @@ public class App2 {
 		Map<String, Set<String>> currentLinkMap = new HashMap<String, Set<String>>();
 
 		// TESTING CRAWLER
-
+		
 		try {
 			currentLinkMap = crawler.crawl(currentURL);
 			links = currentLinkMap.get("images");
+			links2 = currentLinkMap.get("files");
 			
 			for (String link: links){
-				extr.downloadImageFile(link);
+				extr.downloadFiles(link);
+			}
+			
+			for (String link: links2){
+				extr.downloadFiles(link);
 			}
 			
 			
 		} catch (Exception e1) {
-			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
 
-		// TESTING EXTRACTOR
-		try {
-			extr.parseFiles();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+//		// TESTING EXTRACTOR
+//		try {
+//			extr.parseFiles();
+//		} catch (IOException e) {
+//			e.printStackTrace();
+//		}
 
 		// //initial extraction
 		// saving.store(obMap, currentURL);

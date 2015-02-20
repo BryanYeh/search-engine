@@ -15,7 +15,7 @@ public class Crawler {
 	Set<String> linkSet = new HashSet<String>();
 	Set<String> imageSet = new HashSet<String>();
 	Set<String> fileSet = new HashSet<String>();
-	Set<String> importSet = new HashSet<String>();
+//	Set<String> importSet = new HashSet<String>();
 	
 	public Map<String, Set<String>> crawl(String urlString){
 		Document doc;
@@ -32,8 +32,12 @@ public class Crawler {
 	        }
 	        
 	        for(Element e: docFiles){
-	        	importSet.add(e.attr("abs:href"));
+	        	fileSet.add(e.attr("abs:href"));
 	        }
+	        
+//	        for(Element e: docFiles){
+//	        	importSet.add(e.attr("abs:href"));
+//	        }
 	        
 
 	        for(Element e: files){
@@ -61,9 +65,9 @@ public class Crawler {
 	        	System.out.println("File Link: " + file);
 	        }
 	        
-	        for (String importFile: importSet){
-	        	System.out.println("PDF Link: " + importFile);
-	        }
+//	        for (String importFile: importSet){
+//	        	System.out.println("PDF Link: " + importFile);
+//	        }
 	        
 		} catch (IOException e) {
 			e.printStackTrace();
