@@ -14,6 +14,8 @@ import org.jsoup.select.Elements;
 public class Crawler {
 	Set<String> linkSet = new HashSet<String>();
 	Set<String> imageSet = new HashSet<String>();
+	Set<String> fileSet = new HashSet<String>();
+	Set<String> importSet = new HashSet<String>();
 	
 	public Map<String, Set<String>> crawl(String urlString){
 		Document doc;
@@ -21,15 +23,35 @@ public class Crawler {
 		try {
 			doc = Jsoup.connect(urlString).ignoreHttpErrors(true).get();
 			Elements links = doc.select("a[href]");
-			Elements images = doc.select("[src]");
+			Elements pdf = doc.select("a[href$=.pdf]");
+			Elements docFiles = doc.select("a[href$=.doc]");
+			Elements docxFiles = doc.select("a[href$=.docx]");
+			Elements excelFiles = doc.select("a[href$=.xls]");
+			Elements excelXFiles = doc.select("a[href$=.xlsx]");
+			Elements ppt = doc.select("a[href$=.ppt]");
+			Elements pptx = doc.select("a[href$=.pptx]");
+			Elements mp3 = doc.select("a[href$=.mp3]");
+			
+			Elements files = doc.select("[src]");
 	        
 	        for(Element e: links){
 	        	linkSet.add(e.attr("abs:href"));
 	        }
+	        
+	        for(Element e: pdf){
+	        	importSet.add(e.attr("abs:href"));
+	        }
+	        for(Element e: docFiles){
+	        	importSet.add(e.attr("abs:href"));
+	        }
+	        
 
-	        for(Element e: images){
+	        for(Element e: files){
 	        	if(e.tagName().equals("img")){
 	        		imageSet.add(e.attr("abs:src"));
+	        	}
+	        	else{
+	        		fileSet.add(e.attr("abs:src"));
 	        	}
 	        }
 
@@ -45,6 +67,14 @@ public class Crawler {
 	        	System.out.println("Image Link: " + img);
 	        }
 	        
+	        for (String file: fileSet){
+	        	System.out.println("File Link: " + file);
+	        }
+	        
+	        for (String importFile: importSet){
+	        	System.out.println("PDF Link: " + importFile);
+	        }
+	        
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -52,12 +82,16 @@ public class Crawler {
 		Map<String, Set<String>> linksMap = new HashMap<String, Set<String>>();
 		linksMap.put("links", linkSet);
 		linksMap.put("images", imageSet);
+		linksMap.put("files", fileSet);
 		return linksMap;
 	}
 	
+	
+	
+	
+	
 	public static void main(String args[]){
-		new Crawler().crawl("http://www.calstatela.edu");
-		
-		
+		new Crawler().crawl("http://www.calstatela.edu/ecst/cs/student-handbook");
+
 	}
 }

@@ -25,6 +25,8 @@ import org.jsoup.select.Elements;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 
+import com.uwyn.jhighlight.tools.FileUtils;
+
 public class Extractor {
 
 //	public static void main(String args[]) throws IOException, SAXException, TikaException {
@@ -110,6 +112,88 @@ public class Extractor {
 		return metaDataMap;
 	}
 	
+	
+	public void downloadImageFile(String ImgUrl) throws IOException {
+		/**
+		 * Source:
+		 * http://stackoverflow.com/questions/17101276/java-download-all-files-and-folders-in-a-directory
+		 * http://stackoverflow.com/questions/3024002/how-to-create-a-folder-in-java
+		 * http://stackoverflow.com/questions/9658297/java-how-to-create-a-file-in-a-directory-using-relative-path
+		 * http://www.java2s.com/Tutorial/Java/0180__File/Removefileordirectory.htm
+		 * http://stackoverflow.com/questions/4875064/jsoup-how-to-get-an-images-absolute-url
+		 * http://www.avajava.com/tutorials/lessons/how-do-i-save-an-image-from-a-url-to-a-file.html
+		 * http://stackoverflow.com/questions/3987921/not-able-to-delete-the-directory-through-java
+		 * http://stackoverflow.com/questions/3987921/not-able-to-delete-the-directory-through-java
+		 * 
+		 */
+		
+	    File folder = null;
+		
+		String[] folders = ImgUrl.split("/");
+		String folderName = "";
+		for(int i = 2; i < folders.length-1; i++){
+			
+			if(i==2){
+				folderName += folders[i];
+			}
+			else{
+				folderName += "/"+folders[i];
+			}
+			
+			folder = new File(folderName);
+		}
+		try{
+			if(folder.mkdirs()) { 
+				System.out.println("Directory Created");
+			} else {
+				System.out.println("Directory exists");
+			}
+		} catch(Exception e){
+			e.printStackTrace();
+		}
+		
+		
+		String file = saveImageFile(ImgUrl, folders, folder);
+		
+		System.out.println("File Saved: " + file);
+	}
+	
+	
+	
+	public String saveImageFile(String imgUrl, String [] folders, File folder){
+		
+    	URL imgURL2;
+    	String folderName = "";
+		try {
+			imgURL2 = new URL(imgUrl);
+	    	InputStream is = imgURL2.openStream();
+	    	folderName = folder + "\\" + folders[folders.length-1];
+			OutputStream os = new FileOutputStream(folderName);
+
+			byte[] b = new byte[2048];
+			int length;
+
+			while ((length = is.read(b)) != -1) {
+				os.write(b, 0, length);
+			}
+
+			is.close();
+			os.close();
+		} catch (MalformedURLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return folderName;
+
+		
+		
+	}
+	
+	
 	public void parseFiles() throws IOException {
 		/**
 		 * Source:
@@ -119,20 +203,51 @@ public class Extractor {
 		 * http://www.java2s.com/Tutorial/Java/0180__File/Removefileordirectory.htm
 		 * http://stackoverflow.com/questions/4875064/jsoup-how-to-get-an-images-absolute-url
 		 * http://www.avajava.com/tutorials/lessons/how-do-i-save-an-image-from-a-url-to-a-file.html
+		 * http://stackoverflow.com/questions/3987921/not-able-to-delete-the-directory-through-java
+		 * http://stackoverflow.com/questions/3987921/not-able-to-delete-the-directory-through-java
 		 * 
 		 */
+		
+	    File folder = null;
+		
 		try {
-			URL url = new URL("http://www.google.com");
 		    Document doc = Jsoup.connect("http://www.google.com").get();
 		    //System.out.println(doc.html());
-		    if (doc.html().contains(".gif")) {
+		    if (doc.html().contains("img")) {
 		    	Element image = doc.select("img").first();
-		    	String imgUrl = image.absUrl("src");
-		    	String imgSaveFile = imgUrl;
+		    	String ImgUrl = image.absUrl("src");
 		    	
-		    	URL imgURL2 = new URL(imgUrl);
-		    	InputStream is = url.openStream();
-				OutputStream os = new FileOutputStream(imgUrl);
+		    	String[] folders = ImgUrl.split("/");
+		    	String folderName = "";
+		    	for(int i = 2; i < folders.length-1; i++){
+		    		
+		    		if(i==2){
+		    			folderName += folders[i];
+		    		}
+		    		else{
+		    			folderName += "/"+folders[i];
+		    		}
+		    		
+		    		folder = new File(folderName);
+		    	}
+		    	try{
+			    	if(folder.mkdirs()) { 
+			    		System.out.println("Directory Created");
+			    	} else {
+			    		System.out.println("Directory exists");
+			    	}
+			    } catch(Exception e){
+			    	e.printStackTrace();
+			    }
+		    	
+		    	
+		    	
+		    	//String saveImgUrl = image.absUrl("alt");
+		    	System.out.println(image);
+		    	
+		    	URL imgURL2 = new URL(ImgUrl);
+		    	InputStream is = imgURL2.openStream();
+				OutputStream os = new FileOutputStream(folder + "\\" + folders[folders.length-1]);
 
 				byte[] b = new byte[2048];
 				int length;
@@ -143,36 +258,29 @@ public class Extractor {
 
 				is.close();
 				os.close();
-		    	
-		    	
-		    	System.out.println(imgUrl);
-		    	
 		    }
 		    
-		    File folder = new File("randomTestFolder");
-		    try{
-		    	if(folder.mkdir()) { 
-		    		System.out.println("Directory Created");
-		    	} else {
-		    		System.out.println("Directory is not created");
-		    	}
-		    } catch(Exception e){
-		    	e.printStackTrace();
-		    }
-		    
-		    if (folder.isDirectory()) {
-		    	//folder.deleteOnExit();
-		    	//System.out.println("Folder deleted.");
-		    }
-		    
-		    
-//		    Elements links = doc.getElementsByTag("a");
-//		    for (Element link : links) {
-//		        System.out.println(link.attr("href") + " - " + link.text());
-//		    }
-			
+		    //if (folder.exists() && folder.isDirectory()) {
+		    //	Boolean d = deleteDirectory(folder);
+		    //	System.out.println("Folder deleted: " + d);
+		    //}
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
 		}
 	}
+	
+	static public boolean deleteDirectory(File path) {
+	    if (path.exists()) {
+	        File[] files = path.listFiles();
+	        for (int i = 0; i < files.length; i++) {
+	            if (files[i].isDirectory()) {
+	                deleteDirectory(files[i]);
+	            } else {
+	                files[i].delete();
+	            }
+	        }
+	    }
+	    return (path.delete());
+	}
+	
 }
