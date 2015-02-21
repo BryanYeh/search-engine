@@ -11,6 +11,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 import org.apache.tika.exception.TikaException;
 import org.apache.tika.metadata.Metadata;
@@ -42,7 +43,7 @@ public class Extractor {
 		
 		Map<String,String> metaDataMap = new HashMap<String,String>();
 
-		
+		System.out.println("--------------"+filepath);
 		File file = new File(filepath);
 		Parser parser = new AutoDetectParser();
 		ContentHandler bodyCH = new BodyContentHandler();
@@ -169,22 +170,10 @@ public class Extractor {
 		 * http://stackoverflow.com/questions/3987921/not-able-to-delete-the-directory-through-java
 		 * 
 		 */
-		
-	    File folder = null;
-		
+
 		String[] folders = fileUrl.split("/");
-		String folderName = "";
-		for(int i = 2; i < folders.length-1; i++){
-			
-			if(i==2){
-				folderName += folders[i];
-			}
-			else{
-				folderName += "/"+folders[i];
-			}
-			
-			folder = new File(folderName);
-		}
+
+		File folder = new File(fileUrl.split("/")[2]);
 		try{
 			if(folder.mkdirs()) { 
 				System.out.println("Directory Created");
@@ -209,10 +198,9 @@ public class Extractor {
 		try {
 			fileURL2 = new URL(fileUrl);
 	    	InputStream is = fileURL2.openStream();
-	    	if (folders[folders.length-1].contains("?")) {
-	    		folders[folders.length-1] = folders[folders.length-1].replace("?", "");
-	    	}
-	    	folderName = folder + "\\" + folders[folders.length-1];
+	    	String f = folders[folders.length-1].split("\\.")[1].replace("?", "");
+	    	folderName = folder + "\\" + UUID.randomUUID() + "." + f;
+	    	System.out.println(folderName);
 			OutputStream os = new FileOutputStream(folderName);
 
 			byte[] b = new byte[2048];
