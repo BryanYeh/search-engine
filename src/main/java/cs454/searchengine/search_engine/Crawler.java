@@ -44,18 +44,18 @@ public class Crawler {
 	        System.out.println("NUMBER OF LINKS EXTRACTED: " + linkSet.size());
 	        
 	        
-	        for(String link: linkSet){
-	        	System.out.println("Normal Link: " +  link);
-	        	
-	        }
-	        
-	        for (String img: imageSet){
-	        	System.out.println("Image Link: " + img);
-	        }
-	        
-	        for (String file: fileSet){
-	        	System.out.println("File Link: " + file);
-	        }
+//	        for(String link: linkSet){
+//	        	System.out.println("Normal Link: " +  link);
+//	        	
+//	        }
+//	        
+//	        for (String img: imageSet){
+//	        	System.out.println("Image Link: " + img);
+//	        }
+//	        
+//	        for (String file: fileSet){
+//	        	System.out.println("File Link: " + file);
+//	        }
 	        
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -63,8 +63,10 @@ public class Crawler {
 		
 		Map<String, Set<String>> linksMap = new HashMap<String, Set<String>>();
 		linksMap.put("links", linkSet);
+
 		linksMap.put("images", imageSet);
 		linksMap.put("files", fileSet);
+		System.out.println("----------++++++Number of Links in link set: " + linkSet.size() + "----------++++++");
 		return linksMap;
 	}
 	

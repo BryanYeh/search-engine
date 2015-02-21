@@ -42,14 +42,12 @@ public class Extractor {
 		
 		Map<String,String> metaDataMap = new HashMap<String,String>();
 
-		
-		File file = new File(filepath);
 		Parser parser = new AutoDetectParser();
 		ContentHandler bodyCH = new BodyContentHandler();
 		Metadata metadata = new Metadata();
 		FileInputStream input = null;
 		try {
-			input = new FileInputStream(file);
+			input = new FileInputStream(filepath);
 		} catch (FileNotFoundException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
