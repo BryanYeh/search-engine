@@ -84,8 +84,12 @@ public class App2 {
 			System.out.println("--------------LINKS QUEUE SIZE: "
 					+ linksQueue.size());
 
-			while (countNextDepth > 0) {
+
+			while (countNextDepth > 0 && visitedLinks.size() < 10) {
 				currentURL = linksQueue.remove();
+				
+				System.out.println("--------------VISITED LINKS SIZE: "
+						+ visitedLinks.size());
 
 				if (!visitedLinks.contains(currentURL)) {
 					System.out.println("--------------NEXT URL: " + currentURL
@@ -134,8 +138,13 @@ public class App2 {
 			@SuppressWarnings("rawtypes")
 			Map.Entry pair = (Map.Entry) it.next();
 			System.out.println(pair.getKey() + " = " + pair.getValue());
-			linkMap.put((String) pair.getValue(),
-					extr.extractMeta((String) pair.getValue()));
+			try {
+				linkMap.put((String) pair.getValue(),
+						extr.extractMeta((String) pair.getValue()));
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			System.out.println("--------------------");
 			saving.store2(linkMap);
 			it.remove();
@@ -150,58 +159,3 @@ public class App2 {
 	}
 
 }
-
-// // TESTING EXTRACTOR
-// try {
-// extr.parseFiles();
-// } catch (IOException e) {
-// e.printStackTrace();
-// }
-//
-// // //initial extraction
-// saving.store(currentURL);
-//
-// // maxDepth = Integer.parseInt(args[1]);
-// linksQueue.addAll(crawler.crawl(currentURL).get("links"));
-// System.out.println(linksQueue.size());
-// countNextDepth = links.size();
-// linksQueue.addAll(links);
-// depth++;
-//
-// currentDepth = new HashSet<String>();
-//
-// while (depth < maxDepth) {
-// countCurrDepth = 0;
-// currentDepth.clear();
-//
-// while (countNextDepth > 0 && !linksQueue.isEmpty()) {
-// currentURL = linksQueue.remove();
-// if (!currentURL.isEmpty()) {
-// currentDepth.addAll(crawler.crawl(currentURL).get("links"));
-// countNextDepth--;
-// countCurrDepth += currentDepth.size();
-// }
-//
-// System.out.println("ERROR URL: " + currentURL);
-// // CrawledLink currentLink =
-// // Extractor2.parseExample(currentURL);
-// Map<String, String> metadataMap = new HashMap<String, String>();
-// try {
-// metadataMap = extr.parseExample(currentURL);
-// } catch (Exception e1) {
-// e1.printStackTrace();
-// }
-// linkMap.put(currentURL, metadataMap);
-// System.out.print(metadataMap.toString());
-//
-// // saving links to metadata
-// saving.store2(linkMap);
-// }
-// linksQueue.addAll(currentDepth);
-// links.addAll(currentDepth);
-// countNextDepth = countCurrDepth;
-// depth++;
-// }
-// System.out.println("NUMBER OF LINKS: " + links.size());
-// }
-// }
