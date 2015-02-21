@@ -2,15 +2,12 @@ package cs454.searchengine.search_engine;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -24,11 +21,8 @@ import org.apache.tika.sax.BodyContentHandler;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
-import org.jsoup.select.Elements;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
-
-import com.uwyn.jhighlight.tools.FileUtils;
 
 public class Extractor {
 	/*
@@ -84,7 +78,7 @@ public class Extractor {
 			System.out.println("Number of Metadata Tags: " + metaD.size());
 
 			for (String eachName : metaD.names()) {
-				System.out.println(eachName + ": " + metaD.get(eachName));
+				//System.out.println(eachName + ": " + metaD.get(eachName));
 				metaDataMap.put(eachName, metaD.get(eachName));
 
 				// System.out.println(metaD.get(Metadata.CONTENT_TYPE));
@@ -185,19 +179,19 @@ public class Extractor {
 	
 	
 	public void localExtract(File f) throws IOException, SAXException, TikaException {
-
-		try {
-			InputStream fileInput = Extractor.class.getResourceAsStream(f.getAbsolutePath().toString());
-			Metadata metaD = new Metadata();
-			ContentHandler cH = new BodyContentHandler();
-			Parser parser = new AutoDetectParser();
-			
-			parser.parse(fileInput, cH, metaD, new ParseContext());
-			fileInput.close();
-		} catch (IOException e) {
-			e.printStackTrace();
+		InputStream fileInput = new FileInputStream(f);
+		Metadata metaD = new Metadata();
+		ContentHandler cH = new BodyContentHandler();
+		Parser parser = new AutoDetectParser();
+		
+		parser.parse(fileInput, cH, metaD, new ParseContext());
+		for (String name : metaD.names()) {
+			System.out.println(name + ":\t" + metaD.get(name));
 		}
+		System.out.println();
+		fileInput.close();
 	}
+	
 	
 	public void parseFiles() throws IOException {
 		/**
@@ -237,15 +231,15 @@ public class Extractor {
 		    	}
 		    	try{
 			    	if(folder.mkdirs()) { 
-			    		System.out.println("Directory Created");
+			    		//System.out.println("Directory Created");
 			    	} else {
-			    		System.out.println("Directory exists");
+			    		//System.out.println("Directory exists");
 			    	}
 			    } catch(Exception e){
 			    	e.printStackTrace();
 			    }
 		    	
-		    	System.out.println(image);
+		    	//System.out.println(image);
 		    	
 		    	URL imgURL2 = new URL(ImgUrl);
 		    	InputStream is = imgURL2.openStream();

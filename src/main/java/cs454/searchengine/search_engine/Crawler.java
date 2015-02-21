@@ -15,7 +15,7 @@ import org.jsoup.select.Elements;
 import org.xml.sax.SAXException;
 
 public class Crawler {
-	/*
+	/**
 	 * http://stackoverflow.com/questions/2056221/recursively-list-files-in-java
 	 * http://stackoverflow.com/questions/1921181/java-arraylist-of-string-arrays
 	 * http://stackoverflow.com/questions/7935613/adding-to-an-arraylist-java
@@ -108,7 +108,6 @@ public class Crawler {
 		String startDir = path;
 		Extractor extr = new Extractor();
     	try {
-    		//String startDir = ".";
     		new localCrawler().walk(startDir, extr);
     	} catch (Exception ex) {
     		ex.printStackTrace();

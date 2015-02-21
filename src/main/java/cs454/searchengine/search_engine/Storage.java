@@ -32,7 +32,7 @@ public class Storage {
 		}
 	}
 	
-	public void store2(ObjectMapper obMap, Map<String, Map<String,String>> linkMap) {
+	public void store2(Map<String, Map<String,String>> linkMap) {
 		try {
 			obMap.writeValue(jsonFile, linkMap);
 		} catch (JsonGenerationException e) {
@@ -44,8 +44,10 @@ public class Storage {
 		}
 	}
 	
-	
-	//http://www.programcreek.com/2012/12/download-image-from-url-in-java/
+	/**
+	 * Source:
+	 * http://www.programcreek.com/2012/12/download-image-from-url-in-java/
+	*/
 	
 	public static void saveImage(String imageUrl) throws IOException {
 		URL url = new URL(imageUrl);

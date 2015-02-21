@@ -8,7 +8,7 @@ public class randomDeleter {
 		Boolean folderDelete = false;
 		
 		//INPUT PATH/FOLDER NAME HERE TO DELETE PERSISTENT FOLDERS!!!!!
-		File folder = new File("none");
+		File folder = new File("www.google.com");
 		folderDelete = deleteDirectory(folder);
 		System.out.println("Folder Deleted: " + folderDelete);
 	}
