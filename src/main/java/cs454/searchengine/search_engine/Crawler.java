@@ -1,21 +1,32 @@
 package cs454.searchengine.search_engine;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.tika.exception.TikaException;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+import org.xml.sax.SAXException;
 
 public class Crawler {
+	/*
+	 * http://stackoverflow.com/questions/2056221/recursively-list-files-in-java
+	 * http://stackoverflow.com/questions/1921181/java-arraylist-of-string-arrays
+	 * http://stackoverflow.com/questions/7935613/adding-to-an-arraylist-java
+	 * http://beginnersbook.com/2013/12/how-to-joincombine-two-arraylists-in-java/
+	 * http://stackoverflow.com/questions/5287538/how-to-get-basic-user-input-for-java
+	 * http://stackoverflow.com/questions/18281543/java-using-scanner-enter-key-pressed
+	 */
+	
 	Set<String> linkSet = new HashSet<String>();
 	Set<String> imageSet = new HashSet<String>();
 	Set<String> fileSet = new HashSet<String>();
-//	Set<String> importSet = new HashSet<String>();
 	
 	public Map<String, Set<String>> crawl(String urlString){
 		Document doc;
@@ -34,11 +45,6 @@ public class Crawler {
 	        for(Element e: docFiles){
 	        	fileSet.add(e.attr("abs:href"));
 	        }
-	        
-//	        for(Element e: docFiles){
-//	        	importSet.add(e.attr("abs:href"));
-//	        }
-	        
 
 	        for(Element e: files){
 	        	if(e.tagName().equals("img")){
@@ -65,10 +71,6 @@ public class Crawler {
 	        	System.out.println("File Link: " + file);
 	        }
 	        
-//	        for (String importFile: importSet){
-//	        	System.out.println("PDF Link: " + importFile);
-//	        }
-	        
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -80,14 +82,36 @@ public class Crawler {
 		return linksMap;
 	}
 	
-	
-	
-	
-	
-	public static void main(String args[]){
-		//new Crawler().crawl("https://www.washington.edu/doit/programs/accesscollege/faculty-room/resources/examples-powerpoint-presentations");
-		new Crawler().crawl("http://www.calstatela.edu/ecst/cs/student-handbook");
-		//new Crawler().crawl("http://www.noiseaddicts.com/free-samples-mp3/?id=280&desc=American Bison");
+    public void walk( String path, Extractor extr ) throws IOException, SAXException, TikaException {
+        
+    	File root = new File( path );
+        File[] list = root.listFiles();
+        
+        if (list == null) {
+        	System.out.println("There are no files, the path may not have been typed correctly, or this path does not exist.");
+        	return;
+        }
+        
+        for ( File f : list ) {
+            if ( f.isDirectory() ) {
+                walk( f.getAbsolutePath(), extr );
+                //System.out.println(f.getAbsolutePath());
+            } else {
+            	extr.localExtract(f);
+            	System.out.println(f.getAbsolutePath());
+            }
+        }
 
+    }
+    
+	public void crawlLocal(String path) {
+		String startDir = path;
+		Extractor extr = new Extractor();
+    	try {
+    		//String startDir = ".";
+    		new localCrawler().walk(startDir, extr);
+    	} catch (Exception ex) {
+    		ex.printStackTrace();
+    	}
 	}
 }

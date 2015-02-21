@@ -2,12 +2,15 @@ package cs454.searchengine.search_engine;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -28,35 +31,28 @@ import org.xml.sax.SAXException;
 import com.uwyn.jhighlight.tools.FileUtils;
 
 public class Extractor {
-
-//	public static void main(String args[]) throws IOException, SAXException, TikaException {
-//		Extractor ex = new Extractor();
-//		
-//		ex.parseExample("http://www.google.com");
-//
-//	}
-
+	/*
+	 * Sources:
+	 * http://chrisjordan.ca/post/15219674437/parsing-html-with-apache-tika
+	 * Source: http://www.infoq.com/news/2011/12/tika-10 Source:
+	 * http://www.hascode
+	 * .com/2012/12/content-detection-metadata-and-content-
+	 * extraction-with-apache-tika/#Tutorial_Sources
+	 * http://www.tutorialspoint.com/tika/tika_metadata_extraction.htm
+	 * http:/
+	 * /stackoverflow.com/questions/6713927/extract-the-contenttext-of-
+	 * a-url-using-tika
+	 * http://www.ibm.com/developerworks/opensource/tutorials
+	 * /os-apache-tika/
+	 * http://stackoverflow.com/questions/5429814/how-can-i-
+	 * use-the-html-parser-with-apache-tika-in-java-to-extract-all-html-tags
+	 * http
+	 * ://www.javaprogrammingforums.com/whats-wrong-my-code/34932-parse-any
+	 * -file-using-auto-detect-parser-apache-tika-library.html
+	 * 
+	 */
+	
 	public Map<String,String> parseExample(String url) {
-		/*
-		 * Sources:
-		 * http://chrisjordan.ca/post/15219674437/parsing-html-with-apache-tika
-		 * Source: http://www.infoq.com/news/2011/12/tika-10 Source:
-		 * http://www.hascode
-		 * .com/2012/12/content-detection-metadata-and-content-
-		 * extraction-with-apache-tika/#Tutorial_Sources
-		 * http://www.tutorialspoint.com/tika/tika_metadata_extraction.htm
-		 * http:/
-		 * /stackoverflow.com/questions/6713927/extract-the-contenttext-of-
-		 * a-url-using-tika
-		 * http://www.ibm.com/developerworks/opensource/tutorials
-		 * /os-apache-tika/
-		 * http://stackoverflow.com/questions/5429814/how-can-i-
-		 * use-the-html-parser-with-apache-tika-in-java-to-extract-all-html-tags
-		 * http
-		 * ://www.javaprogrammingforums.com/whats-wrong-my-code/34932-parse-any
-		 * -file-using-auto-detect-parser-apache-tika-library.html
-		 * 
-		 */
 		URL inputURL = null;
 		Map<String, String> metaDataMap = new HashMap<String, String>();
 
@@ -187,86 +183,21 @@ public class Extractor {
 		return folderName;
 	}
 	
-//	public void downloadImageFile(String ImgUrl) throws IOException {
-//		/**
-//		 * Source:
-//		 * http://stackoverflow.com/questions/17101276/java-download-all-files-and-folders-in-a-directory
-//		 * http://stackoverflow.com/questions/3024002/how-to-create-a-folder-in-java
-//		 * http://stackoverflow.com/questions/9658297/java-how-to-create-a-file-in-a-directory-using-relative-path
-//		 * http://www.java2s.com/Tutorial/Java/0180__File/Removefileordirectory.htm
-//		 * http://stackoverflow.com/questions/4875064/jsoup-how-to-get-an-images-absolute-url
-//		 * http://www.avajava.com/tutorials/lessons/how-do-i-save-an-image-from-a-url-to-a-file.html
-//		 * http://stackoverflow.com/questions/3987921/not-able-to-delete-the-directory-through-java
-//		 * http://stackoverflow.com/questions/3987921/not-able-to-delete-the-directory-through-java
-//		 * 
-//		 */
-//		
-//	    File folder = null;
-//		
-//		String[] folders = ImgUrl.split("/");
-//		String folderName = "";
-//		for(int i = 2; i < folders.length-1; i++){
-//			
-//			if(i==2){
-//				folderName += folders[i];
-//			}
-//			else{
-//				folderName += "/"+folders[i];
-//			}
-//			
-//			folder = new File(folderName);
-//		}
-//		try{
-//			if(folder.mkdirs()) { 
-//				System.out.println("Directory Created");
-//			} else {
-//				System.out.println("Directory exists");
-//			}
-//		} catch(Exception e){
-//			e.printStackTrace();
-//		}
-//		
-//		
-//		String file = saveImageFile(ImgUrl, folders, folder);
-//		
-//		System.out.println("File Saved: " + file);
-//	}
-//	
-//	
-//	
-//	public String saveImageFile(String imgUrl, String [] folders, File folder){
-//		
-//    	URL imgURL2;
-//    	String folderName = "";
-//		try {
-//			imgURL2 = new URL(imgUrl);
-//	    	InputStream is = imgURL2.openStream();
-//	    	folderName = folder + "\\" + folders[folders.length-1];
-//			OutputStream os = new FileOutputStream(folderName);
-//
-//			byte[] b = new byte[2048];
-//			int length;
-//
-//			while ((length = is.read(b)) != -1) {
-//				os.write(b, 0, length);
-//			}
-//
-//			is.close();
-//			os.close();
-//		} catch (MalformedURLException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		} catch (IOException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
-//		
-//		return folderName;
-//
-//		
-//		
-//	}
 	
+	public void localExtract(File f) throws IOException, SAXException, TikaException {
+
+		try {
+			InputStream fileInput = Extractor.class.getResourceAsStream(f.getAbsolutePath().toString());
+			Metadata metaD = new Metadata();
+			ContentHandler cH = new BodyContentHandler();
+			Parser parser = new AutoDetectParser();
+			
+			parser.parse(fileInput, cH, metaD, new ParseContext());
+			fileInput.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
 	
 	public void parseFiles() throws IOException {
 		/**
@@ -314,9 +245,6 @@ public class Extractor {
 			    	e.printStackTrace();
 			    }
 		    	
-		    	
-		    	
-		    	//String saveImgUrl = image.absUrl("alt");
 		    	System.out.println(image);
 		    	
 		    	URL imgURL2 = new URL(ImgUrl);
@@ -334,6 +262,7 @@ public class Extractor {
 				os.close();
 		    }
 		    
+		    //THIS DELETES FOLDERS, LEAVE THIS HERE UNTIL WE USE IT!!!
 		    //if (folder.exists() && folder.isDirectory()) {
 		    //	Boolean d = deleteDirectory(folder);
 		    //	System.out.println("Folder deleted: " + d);
@@ -356,5 +285,4 @@ public class Extractor {
 	    }
 	    return (path.delete());
 	}
-	
 }
