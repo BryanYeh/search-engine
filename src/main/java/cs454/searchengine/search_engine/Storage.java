@@ -32,7 +32,7 @@ public class Storage {
 		}
 	}
 	
-	public void store2(ObjectMapper obMap, Map<String, Map<String,String>> linkMap) {
+	public void store2(Map<String, Map<String,String>> linkMap) {
 		try {
 			obMap.writeValue(jsonFile, linkMap);
 		} catch (JsonGenerationException e) {

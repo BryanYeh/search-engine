@@ -2,6 +2,7 @@ package cs454.searchengine.search_engine;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -35,6 +36,50 @@ public class Extractor {
 //		ex.parseExample("http://www.google.com");
 //
 //	}
+	
+	
+	public Map<String,String> extractMeta(String filepath) {
+		
+		Map<String,String> metaDataMap = new HashMap<String,String>();
+
+		
+		File file = new File(filepath);
+		Parser parser = new AutoDetectParser();
+		ContentHandler bodyCH = new BodyContentHandler();
+		Metadata metadata = new Metadata();
+		FileInputStream input = null;
+		try {
+			input = new FileInputStream(file);
+		} catch (FileNotFoundException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+
+		try {
+			try {
+				parser.parse(input, bodyCH, metadata, new ParseContext());
+			} catch (SAXException e) {
+				e.printStackTrace();
+			} catch (TikaException e) {
+				e.printStackTrace();
+			}
+
+			System.out.println("Number of Metadata Tags: " + metadata.size());
+
+			for (String eachName : metadata.names()) {
+				System.out.println(eachName + ": " + metadata.get(eachName));
+				metaDataMap.put(eachName, metadata.get(eachName));
+			}
+
+			input.close();
+
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		return metaDataMap;
+	}
+	
 
 	public Map<String,String> parseExample(String url) {
 		/*
@@ -112,7 +157,7 @@ public class Extractor {
 		return metaDataMap;
 	}
 	
-	public void downloadFiles(String fileUrl) throws IOException {
+	public String downloadFiles(String fileUrl) throws IOException {
 		/**
 		 * Source:
 		 * http://stackoverflow.com/questions/17101276/java-download-all-files-and-folders-in-a-directory
@@ -154,6 +199,7 @@ public class Extractor {
 		String file = saveFiles(fileUrl, folders, folder);
 		
 		System.out.println("File Saved: " + file);
+		return file;
 	}
 	
 	public String saveFiles(String fileUrl, String [] folders, File folder){

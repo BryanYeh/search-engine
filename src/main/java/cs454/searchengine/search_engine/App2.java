@@ -7,8 +7,10 @@ package cs454.searchengine.search_engine;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Queue;
 import java.util.Set;
 
@@ -20,39 +22,117 @@ public class App2 {
 		Crawler crawler = new Crawler();
 		Extractor extr = new Extractor();
 		Storage saving = new Storage();
-		// Map<String, Map<String,Set<String>>> linkMap = new HashMap<String,
-		// Map<String, Set<String>>>();
-
+		Set<String> visitedLinks = new HashSet<String>();
+		Map<String,String> fileMap = new HashMap<String,String>();
+		
+		
+		
 		// Initialize local variables
 		Set<String> links = new HashSet<String>();
 		Set<String> links2 = new HashSet<String>();
+		Set<String> links3 = new HashSet<String>();
+		
 		Queue<String> linksQueue = new LinkedList<String>();
 		int maxDepth = 2;
 		int depth = 0;
-		int countNextDepth;
+		int countNextDepth = 0;
 		int countCurrDepth = 0;
 		String currentURL = "http://www.calstatela.edu/ecst/cs/student-handbook"; // default URL
 		Map<String, Set<String>> currentLinkMap = new HashMap<String, Set<String>>();
+		Map<String, String> metaData = new HashMap<String, String>();
+		Map<String, Map<String,String>> linkMap = new HashMap<String, Map<String,String>>();
 
-		// TESTING CRAWLER
+		// INITIAL CRAWL
 		
 		try {
 			currentLinkMap = crawler.crawl(currentURL);
 			links = currentLinkMap.get("images");
 			links2 = currentLinkMap.get("files");
+			links3 = currentLinkMap.get("links");
+			linksQueue.addAll(links3);
+			countNextDepth = links3.size();
+			
+			System.out.println("--------------" + countNextDepth + "--------------" );
+			
+			depth++;
 			
 			for (String link: links){
-				extr.downloadFiles(link);
+				String fileDir = extr.downloadFiles(link);
+				fileMap.put(link, fileDir);
 			}
 			
 			for (String link: links2){
-				extr.downloadFiles(link);
+				String fileDir = extr.downloadFiles(link);
+				fileMap.put(link, fileDir);
 			}
+			
+			visitedLinks.add(currentURL);
+			linkMap.put(currentURL, extr.parseExample(currentURL));
+		    saving.store2(linkMap);
 			
 			
 		} catch (Exception e1) {
 			e1.printStackTrace();
 		}
+		
+		
+		//CRAWL LOOP
+		
+		while (!linksQueue.isEmpty() && depth<maxDepth){
+			currentURL = linksQueue.remove();
+			
+			if (!visitedLinks.contains(currentURL) && countNextDepth<0){
+				try {
+					currentLinkMap = crawler.crawl(currentURL);
+					links = currentLinkMap.get("images");
+					links2 = currentLinkMap.get("files");
+					links3 = currentLinkMap.get("links");
+					linksQueue.addAll(links3);
+					countNextDepth--;
+					countCurrDepth += links3.size();
+					
+					for (String link: links){
+						String fileDir = extr.downloadFiles(link);
+						fileMap.put(link, fileDir);
+					}
+					
+					for (String link: links2){
+						String fileDir = extr.downloadFiles(link);
+						fileMap.put(link, fileDir);
+					}
+					visitedLinks.add(currentURL);
+					linkMap.put(currentURL, extr.parseExample(currentURL));
+				    saving.store2(linkMap);
+				} catch (Exception e1) {
+					e1.printStackTrace();
+				}
+			}
+			
+			countNextDepth = countCurrDepth;
+			depth++;
+
+		}
+		
+		
+		Iterator<Entry<String, String>> it = fileMap.entrySet().iterator();
+	    while (it.hasNext()) {
+	        @SuppressWarnings("rawtypes")
+			Map.Entry pair = (Map.Entry)it.next();
+	        System.out.println(pair.getKey() + " = " + pair.getValue());
+	        linkMap.put((String) pair.getValue(), extr.extractMeta("/" + (String) pair.getValue()));
+		    saving.store2(linkMap);
+	        it.remove(); 
+	    }
+	    
+	    
+		
+		//storage
+	    
+	    
+	    saving.store2(linkMap);
+		
+		
+		
 
 //		// TESTING EXTRACTOR
 //		try {
