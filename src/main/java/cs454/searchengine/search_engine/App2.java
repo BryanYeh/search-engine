@@ -66,6 +66,11 @@ public class App2 {
 				String fileDir = extr.downloadFiles(link);
 				fileMap.put(link, fileDir);
 			}
+			
+			for (String link : links3) {
+				String fileDir = extr.downloadFiles(link);
+				fileMap.put(link, fileDir);
+			}
 
 			visitedLinks.add(currentURL);
 			linkMap.put(currentURL, extr.parseExample(currentURL));

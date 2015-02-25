@@ -9,6 +9,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -50,7 +51,6 @@ public class Extractor {
 		try {
 			input = new FileInputStream(filepath);
 		} catch (FileNotFoundException e1) {
-			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
 
@@ -81,7 +81,7 @@ public class Extractor {
 	
 
 	public Map<String,String> parseExample(String url) {
-		/*
+		/**
 		 * Sources:
 		 * http://chrisjordan.ca/post/15219674437/parsing-html-with-apache-tika
 		 * Source: http://www.infoq.com/news/2011/12/tika-10 Source:
@@ -118,7 +118,6 @@ public class Extractor {
 		Parser parser = new HtmlParser();
 		Metadata metaD = new Metadata();
 		ContentHandler bodyCH = new BodyContentHandler();
-		// TeeContentHandler teeCH = new TeeContentHandler();
 
 		try {
 			try {
@@ -134,17 +133,6 @@ public class Extractor {
 			for (String eachName : metaD.names()) {
 				System.out.println(eachName + ": " + metaD.get(eachName));
 				metaDataMap.put(eachName, metaD.get(eachName));
-
-				// System.out.println(metaD.get(Metadata.CONTENT_TYPE));
-				// System.out.println(metaD.get(Metadata.CONTENT_DISPOSITION));
-				// System.out.println(metaD.get(Metadata.CONTENT_ENCODING));
-				// System.out.println(metaD.get(Metadata.CONTENT_LANGUAGE));
-				// System.out.println(metaD.get(Metadata.CONTENT_LENGTH));
-				// System.out.println(metaD.get(Metadata.CONTENT_LOCATION));
-				// System.out.println(metaD.get(Metadata.CONTENT_MD5));
-				// System.out.println(metaD.get(Metadata.LAST_MODIFIED));
-				// System.out.println(metaD.get(Metadata.LOCATION));
-				// System.out.println(metaD.get(eachName));
 			}
 
 			input.close();
@@ -196,10 +184,11 @@ public class Extractor {
 		try {
 			fileURL2 = new URL(fileUrl);
 	    	InputStream is = fileURL2.openStream();
-	    	folderName = folder + "\\" + UUID.randomUUID() + "." + folders[folders.length-1].split("\\.")[1].replace("?", "");
+	    	folderName = folder + "\\" + UUID.randomUUID();// + "." + folders[folders.length-1].split("\\.")[1].replace("?", "");
 	    	System.out.println(folderName);
-			OutputStream os = new FileOutputStream(folderName);
-
+			//OutputStream os = new FileOutputStream(folderName);
+	    	OutputStream os = new FileOutputStream(Paths.get(folderName).toString());
+	    	
 			byte[] b = new byte[2048];
 			int length;
 
