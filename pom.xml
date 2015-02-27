@@ -55,6 +55,51 @@
 			<artifactId>mime-util</artifactId>
 			<version>1.2</version>
 		</dependency>
+		<dependency>
+			<groupId>gnu.getopt</groupId>
+			<artifactId>java-getopt</artifactId>
+			<version>1.0.13</version>
+		</dependency>
 
 	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<!-- Build an executable JAR -->
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<version>2.4</version>
+				<configuration>
+					<archive>
+						<manifest>
+							<addClasspath>true</addClasspath>
+							<classpathPrefix>lib/</classpathPrefix>
+							<mainClass>cs454.searchengine.search_engine.CrawlerApp</mainClass>
+						</manifest>
+					</archive>
+				</configuration>
+			</plugin>
+
+
+<!-- 			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>exec-maven-plugin</artifactId>
+				<version>1.2.1</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>java</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<mainClass>search-engine.cs454.searchengine.search_engine.App2</mainClass>
+					<arguments>
+						<argument>-d 2 -u hi</argument>
+					</arguments>
+				</configuration>
+			</plugin> -->
+		</plugins>
+	</build>
 </project>
