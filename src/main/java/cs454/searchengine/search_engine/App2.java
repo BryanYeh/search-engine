@@ -5,6 +5,7 @@ package cs454.searchengine.search_engine;
  * http://www.java2s.com/Tutorial/Java/0320__Network/Getallhyperlinksfromawebpage.htm
  * http://www.urbanophile.com/arenn/hacking/getopt/gnu.getopt.Getopt.html#_top_
  * http://stackoverflow.com/questions/5585779/converting-string-to-int-in-java
+ * http://www.tutorialspoint.com/java/java_basic_operators.htm
  **/
 
 import gnu.getopt.Getopt;
