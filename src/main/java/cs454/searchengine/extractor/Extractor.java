@@ -1,4 +1,4 @@
-package cs454.searchengine.search_engine;
+package cs454.searchengine.extractor;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -184,7 +184,7 @@ public class Extractor {
 		try {
 			fileURL2 = new URL(fileUrl);
 	    	InputStream is = fileURL2.openStream();
-	    	folderName = folder + "\\" + UUID.randomUUID();// + "." + folders[folders.length-1].split("\\.")[1].replace("?", "");
+	    	folderName = folder + "/" + UUID.randomUUID(); //+ "." + folders[folders.length-1].split("\\.")[1].replace("?", "");
 	    	System.out.println(folderName);
 			//OutputStream os = new FileOutputStream(folderName);
 	    	OutputStream os = new FileOutputStream(Paths.get(folderName).toString());
