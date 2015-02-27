@@ -1,6 +1,9 @@
 package cs454.searchengine.search_engine;
 
 import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.net.URLConnection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -28,8 +31,6 @@ public class Crawler {
 
 			for (Element e : links) {
 					linkSet.add(new Link(e.attr("abs:href"), e.text()));
-					String content = "LINK: " +  e.attr("abs:href")+ "  CONTENT-TYPE: "+ URLConnection.guessContentTypeFromName(e.attr("abs:href"));
-					System.out.println(content);
 
 				// linkSet.add(e.attr("abs:href"));
 			}
@@ -43,8 +44,6 @@ public class Crawler {
 			for (Element e : files) {
 				if (e.tagName().equals("img")) {
 					linkSet.add(new Link(e.attr("abs:src"), e.text()));
-					String content = "LINK: " +  e.attr("abs:src")+ "  CONTENT-TYPE: "+ URLConnection.guessContentTypeFromName(e.attr("abs:src"));
-					System.out.println(content);
 					// linkSet.add(e.attr("abs:src"));
 				}
 			}
@@ -76,7 +75,15 @@ public class Crawler {
 	public static void main(String args[]) {
 		// new
 		// Crawler().crawl("https://www.washington.edu/doit/programs/accesscollege/faculty-room/resources/examples-powerpoint-presentations");
-		new Crawler().crawl("http://www.calstatela.edu/");
+//		new Crawler().crawl("http://www.calstatela.edu/ecst/cs/student-handbook");
+//		String urlString = "http://www.calstatela.edu/sites/default/files/groups/Department%20of%20Computer%20Science/undergraduate_student_handbook_0.docx";
+		String urlString = "https://www.washington.edu/doit/programs/accesscollege/faculty-room/resources/examples-powerpoint-presentations";
+
+		
+		
+		
+		
+		
 		// new
 		// Crawler().crawl("http://www.noiseaddicts.com/free-samples-mp3/?id=280&desc=American Bison");
 

@@ -15,7 +15,6 @@ import java.util.Map.Entry;
 import java.util.Queue;
 import java.util.Set;
 
-import cs454.searchengine.extractor.Extractor;
 
 public class App2 {
 
@@ -23,23 +22,17 @@ public class App2 {
 
 		// Initialize Crawler & Extractor
 		Crawler crawler = new Crawler();
-		Extractor extr = new Extractor();
 		Storage saving = new Storage();
 		Set<String> visitedLinks = new HashSet<String>();
-//		Map<String, String> fileMap = new HashMap<String, String>();
-		Set<String> currentDepth = new HashSet<String>();
 		Set<CrawledLink> totalLinkSet = new HashSet<CrawledLink>();
-//		// Initialize local variables
-//		Set<String> links = new HashSet<String>();
-//		Set<String> links2 = new HashSet<String>();
-//		Set<String> links3 = new HashSet<String>();
+
 
 		Queue<String> linksQueue = new LinkedList<String>();
 		int maxDepth = 2;
 		int depth = 0;
 		int countNextDepth = 0;
 		int countCurrDepth = 0;
-		String currentURL = "http://www.calstatela.edu/ecst/cs/student-handbook"; // default
+		String currentURL = "http://www.cs.berkeley.edu/~russell/classes/cs188/f14/"; // default
 																					// URL
 		Set<Link> currentLinkSet = new HashSet<Link>();
 		Map<String, String> metaData = new HashMap<String, String>();
@@ -52,31 +45,18 @@ public class App2 {
 			for(Link l: currentLinkSet){
 				linksQueue.add(l.getUrl());
 			}
+			
 			countNextDepth = currentLinkSet.size();
 
 			System.out.println("--------------" + countNextDepth
 					+ "--------------");
-
-			depth++;
-
-			for (Link l : currentLinkSet) {
-				String[] fileInfo = saving.saveFiles(l.getUrl());
-				totalLinkSet.add(new CrawledLink(l.getUrl(),fileInfo[0], new Date().toString(), fileInfo[1], currentLinkSet) );
-			}
-
-//			for (String link : links2) {
-//				String fileDir = extr.downloadFiles(link);
-//				fileMap.put(link, fileDir);
-//			}
-//			
-//			for (String link : links3) {
-//				String fileDir = extr.downloadFiles(link);
-//				fileMap.put(link, fileDir);
-//			}
+			
+			String[] fileInfo = saving.saveFiles(currentURL);
+			totalLinkSet.add(new CrawledLink(currentURL, fileInfo[0], new Date().toString(), fileInfo[1], new HashSet<Link>(currentLinkSet)));
 
 			visitedLinks.add(currentURL);
-			linkMap.put(currentURL, extr.parseExample(currentURL));
 			saving.store2(totalLinkSet);
+			System.out.println("TOTAL LINKS AFTER INITIAL CRAWL: " + totalLinkSet.size());
 
 		} catch (Exception e1) {
 			e1.printStackTrace();
@@ -84,15 +64,11 @@ public class App2 {
 
 		// CRAWL LOOP
 
-		while (!linksQueue.isEmpty() && depth <= maxDepth) {
+			
 
-			System.out
-					.println("--------------ENTERING CRAWL LOOP--------------");
-			System.out.println("--------------LINKS QUEUE SIZE: "
-					+ linksQueue.size());
-
-
-			while (countNextDepth > 0 && visitedLinks.size() < 10) {
+			while (countNextDepth > 0 && !linksQueue.isEmpty() && depth <= maxDepth && visitedLinks.size() < 200) {
+				System.out.println("--------------ENTERING CRAWL LOOP--------------");
+				
 				currentURL = linksQueue.remove();
 				
 				System.out.println("--------------VISITED LINKS SIZE: "
@@ -104,77 +80,57 @@ public class App2 {
 					System.out
 							.println("--------------PASSED TEST--------------");
 					try {
+						currentLinkSet.clear();
 						currentLinkSet = crawler.crawl(currentURL);
+						System.out.println("+++++++++++CURRENT LINK SET SIZE: " + currentLinkSet.size());
 						for(Link l: currentLinkSet){
 							linksQueue.add(l.getUrl());
 						}
+						
+						String[] fileInfo = saving.saveFiles(currentURL);
+						totalLinkSet.add(new CrawledLink(currentURL, fileInfo[0], new Date().toString(), fileInfo[1], new HashSet<Link>(currentLinkSet)) );
+						
 						countNextDepth--;
 						countCurrDepth += currentLinkSet.size();
 						System.out.println("--------------COUNT CURR DEPTH: "
 								+ countCurrDepth + "--------------");
 						System.out.println("--------------COUNT NEXT DEPTH: "
 								+ countNextDepth + "--------------");
-						
-//						for (String link : links3) {
-//							String fileDir = extr.downloadFiles(link);
-//							fileMap.put(link, fileDir);
-//						}
-//						
-//						for (String link : links) {
-//							String fileDir = extr.downloadFiles(link);
-//							fileMap.put(link, fileDir);
-//						}
-//
-//						for (String link : links2) {
-//							String fileDir = extr.downloadFiles(link);
-//							fileMap.put(link, fileDir);
-//						}
-						
-						for (Link l : currentLinkSet) {
-							String[] fileInfo = saving.saveFiles(l.getUrl());
-							totalLinkSet.add(new CrawledLink(l.getUrl(),fileInfo[0], new Date().toString(), fileInfo[1], currentLinkSet) );
-						}
 					
 						
 						visitedLinks.add(currentURL);
+						System.out.println("TOTAL LINKS AFTER LOOP CRAWL: " + totalLinkSet.size());
 //						saving.store2(linkMap);
 						saving.store2(totalLinkSet);
 					} catch (Exception e1) {
 						e1.printStackTrace();
 					}
+					
+					
 
 				}
+				
+				if(countNextDepth == 0){
+					countNextDepth = countCurrDepth;
+					depth++;
+					countCurrDepth = 0;
+				}
 			}
+			
+			
+			System.out.println("TOTAL FILES: " + totalLinkSet.size());
+			
+			System.out.println("--------------LINKS QUEUE SIZE: "
+					+ linksQueue.size());
+
+			
+
+			
 
 			System.out.println("--------------I'M WORKING!!!!--------------");
-			countNextDepth = countCurrDepth;
-			depth++;
+			
 
 		}
-
-//		Iterator<Entry<String, String>> it = fileMap.entrySet().iterator();
-//		while (it.hasNext()) {
-//			@SuppressWarnings("rawtypes")
-//			Map.Entry pair = (Map.Entry) it.next();
-//			System.out.println(pair.getKey() + " = " + pair.getValue());
-//			try {
-//				linkMap.put((String) pair.getValue(),
-//						extr.extractMeta((String) pair.getValue()));
-//			} catch (Exception e) {
-//				// TODO Auto-generated catch block
-//				e.printStackTrace();
-//			}
-//			System.out.println("--------------------");
-//			saving.store2(linkMap);
-//			it.remove();
-//		}
-
-		System.out.println("TOTAL FILES: " + totalLinkSet.size());
-
-		// storage
-
-		saving.store2(totalLinkSet);
+		
 
 	}
-
-}

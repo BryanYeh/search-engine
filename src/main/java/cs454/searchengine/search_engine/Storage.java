@@ -5,19 +5,15 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.URLConnection;
-import java.nio.file.Paths;
-import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
 import org.codehaus.jackson.JsonGenerationException;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
-
-import cs454.searchengine.extractor.Extractor;
 
 public class Storage {
 	File jsonFile = new File("metadata.json");
@@ -28,36 +24,9 @@ public class Storage {
 		directoryFile.mkdir();
 	}
 	
-	public void store(String currentURL) {
-		Extractor extr = new Extractor();
-		
-		// initial extraction
-		try {
-			obMap.writeValue(jsonFile, extr.parseExample(currentURL));
-		} catch (JsonGenerationException e) {
-			e.printStackTrace();
-		} catch (JsonMappingException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-
-		}
-	}
-	
-	public void store2(Map<String, Map<String,String>> linkMap) {
-		try {
-			obMap.writeValue(jsonFile, linkMap);
-		} catch (JsonGenerationException e) {
-			e.printStackTrace();
-		} catch (JsonMappingException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
-	
 	public void store2(Set<CrawledLink> linkMap) {
 		try {
+			System.out.println("Saving to JSON");
 			obMap.writeValue(jsonFile, linkMap);
 		} catch (JsonGenerationException e) {
 			e.printStackTrace();
@@ -132,17 +101,48 @@ public class Storage {
 		String contentType = "";
 		try {
 			fileURL2 = new URL(fileUrl);
-			URLConnection connection = fileURL2.openConnection();
-			connection.connect();
-			contentType = connection.getContentType();
-			System.out.println("URL: " + fileUrl + "Content-Type" + contentType);
+			contentType = getContentType(fileUrl);
+			System.out.println("URL: " + fileUrl + " --------- Content-Type" + contentType);
 			
-			if(contentType.equals("text/html")){
+			if(contentType.contains("text/html")){
 				savedFile = new File(directoryFile, UUID.randomUUID().toString() + ".html");
 				savedFile.createNewFile();
 			}
 			else{
-				savedFile = new File(directoryFile, UUID.randomUUID().toString());
+				String fileName = "";
+				if(fileUrl.contains(".docx"))
+					fileName = UUID.randomUUID().toString() + ".docx";
+				else if(fileUrl.contains(".doc"))
+					fileName = UUID.randomUUID().toString() + ".doc";
+				else if(fileUrl.contains(".xlsx"))
+					fileName = UUID.randomUUID().toString() + ".xlsx";
+				else if(fileUrl.contains(".xls"))
+					fileName = UUID.randomUUID().toString() + ".xls";
+				else if(fileUrl.contains(".pptx"))
+					fileName = UUID.randomUUID().toString() + ".pptx";
+				else if(fileUrl.contains(".ppt"))
+					fileName = UUID.randomUUID().toString() + ".ppt";
+				else if(fileUrl.contains(".pdf"))
+					fileName = UUID.randomUUID().toString() + ".pdf";
+				else if(fileUrl.contains(".mp3"))
+					fileName = UUID.randomUUID().toString() + ".mp3";
+				else if(fileUrl.contains(".jpg"))
+					fileName = UUID.randomUUID().toString() + ".jpg";
+				else if(fileUrl.contains(".png"))
+					fileName = UUID.randomUUID().toString() + ".png";
+				else if(fileUrl.contains(".bmp"))
+					fileName = UUID.randomUUID().toString() + ".bmp";
+				else if(fileUrl.contains(".jpeg"))
+					fileName = UUID.randomUUID().toString() + ".jpeg";
+				else if(fileUrl.contains(".txt"))
+					fileName = UUID.randomUUID().toString() + ".txt";
+				else if(fileUrl.contains(".tiff"))
+					fileName = UUID.randomUUID().toString() + ".tiff";
+				
+				//doc|ppt|pdf|xls|mp3|png|gif|bmp|tiff|jpg|jpeg|txt
+				
+				
+				savedFile = new File(directoryFile, fileName);
 				savedFile.createNewFile();
 			}
 		
@@ -173,6 +173,33 @@ public class Storage {
 		
 		
 		return info;
+	}
+	
+	
+	public String getContentType (String urlString){
+		URL url = null;
+		String contentType = "";
+		try {
+			url = new URL(urlString);
+		} catch (MalformedURLException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		HttpURLConnection connection;
+		try {
+			connection = (HttpURLConnection)  url.openConnection();
+			connection.setRequestMethod("HEAD");
+			connection.connect();
+			contentType = connection.getContentType();
+			
+			System.out.println(contentType);
+			
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return contentType;
 	}
 
 }

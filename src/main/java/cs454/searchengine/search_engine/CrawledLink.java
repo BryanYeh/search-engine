@@ -6,13 +6,13 @@ import java.util.Map;
 import java.util.Set;
 
 public class CrawledLink{
-
-	private Set<Link> listOfLinks;
+	
 	private String linkURL;
 	private String localPath;
 	private String lastPullDate;
 	private String mimeType;
 	private Map<String, String> metadata;
+	private Set<Link> listOfLinks;
 	
 	public CrawledLink(){
 		metadata = new HashMap<String,String>();
@@ -90,6 +90,11 @@ public class CrawledLink{
 
 	public void setMimeType(String mimeType) {
 		this.mimeType = mimeType;
+	}
+	
+	public String toString(){
+		return "Link: " + linkURL + "-- Local Path: " + localPath + "-- Date: " + lastPullDate + "  -- mimeType: " + mimeType;
+		
 	}
 
 }
