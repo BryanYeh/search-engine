@@ -5,7 +5,6 @@ package cs454.searchengine.search_engine;
  **/
 
 import gnu.getopt.Getopt;
-
 import java.util.Date;
 import java.util.HashSet;
 import java.util.LinkedList;
