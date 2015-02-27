@@ -1,8 +1,13 @@
 package cs454.searchengine.search_engine;
 
 /**
+ * Sources:
  * http://www.java2s.com/Tutorial/Java/0320__Network/Getallhyperlinksfromawebpage.htm
+ * http://www.urbanophile.com/arenn/hacking/getopt/gnu.getopt.Getopt.html#_top_
+ * http://stackoverflow.com/questions/5585779/converting-string-to-int-in-java
  **/
+
+import gnu.getopt.Getopt;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -15,9 +20,38 @@ import java.util.Queue;
 import java.util.Set;
 
 public class App2 {
+	static int depth = 0;
+	static String url = null;
 
 	public static void main(String args[]) {
 
+		Getopt g = new Getopt("testprog", args, "d:u:");
+		int c;
+		String arg;
+		
+		while ((c = g.getopt()) != -1)
+		{
+			switch(c)
+			{
+			case 'd':
+				arg = g.getOptarg();
+				System.out.println("You picked " + (char)c + " with argument " + ((arg != null) ? arg : "null"));
+				if (arg != null) depth = Integer.parseInt(arg);
+				break;
+			case 'u':
+				arg = g.getOptarg();
+				System.out.println("You picked " + (char)c + " with argument " + ((arg != null) ? arg : "null"));
+				if(arg != null) url = arg;
+				break;
+			case '?':
+				break; // getopt() already printed an error
+			default:
+				System.out.print("getopt() returned " + c + "\n");
+			}
+		}
+		
+		System.out.println("Inputted depth: " + depth);
+		System.out.println("Inputted URL: " + url);
 		
 		
 //		// Initialize Crawler & Extractor

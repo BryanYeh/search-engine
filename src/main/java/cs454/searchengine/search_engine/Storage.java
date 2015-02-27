@@ -20,16 +20,16 @@ public class Storage {
 		//Extractor extr = new Extractor();
 		
 		// initial extraction
-		try {
-			obMap.writeValue(jsonFile, extr.parseExample(currentURL));
-		} catch (JsonGenerationException e) {
-			e.printStackTrace();
-		} catch (JsonMappingException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-
-		}
+//		try {
+//			obMap.writeValue(jsonFile, extr.parseExample(currentURL));
+//		} catch (JsonGenerationException e) {
+//			e.printStackTrace();
+//		} catch (JsonMappingException e) {
+//			e.printStackTrace();
+//		} catch (IOException e) {
+//			e.printStackTrace();
+//
+//		}
 	}
 	
 	public void store2(Map<String, Map<String,String>> linkMap) {
