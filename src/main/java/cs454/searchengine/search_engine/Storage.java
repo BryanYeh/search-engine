@@ -17,7 +17,7 @@ public class Storage {
 	ObjectMapper obMap = new ObjectMapper();
 	
 	public void store(String currentURL) {
-		Extractor extr = new Extractor();
+		//Extractor extr = new Extractor();
 		
 		// initial extraction
 		try {
