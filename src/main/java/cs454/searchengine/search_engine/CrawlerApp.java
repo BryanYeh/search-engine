@@ -125,37 +125,45 @@ public class CrawlerApp {
 
 	public static void main(String args[]) {
 		
-		Getopt g = new Getopt("testprog", args, "d:u:");
-		int c;
-		String arg;
+//		Getopt g = new Getopt("testprog", args, "d:u:");
+//		int c;
+//		String arg;
 		String url = "http://www.cs.berkeley.edu/~russell/classes/cs188/f14/"; // default
 		// URL
 		int depth = 2;
 		
-		while ((c = g.getopt()) != -1)
-		{
-			switch(c)
-			{
-			case 'd':
-				arg = g.getOptarg();
-				System.out.println("You picked " + (char)c + " with argument " + ((arg != null) ? arg : "null"));
-				if (arg != null) depth = Integer.parseInt(arg);
-				break;
-			case 'u':
-				arg = g.getOptarg();
-				System.out.println("You picked " + (char)c + " with argument " + ((arg != null) ? arg : "null"));
-				if(arg != null) url = arg;
-				break;
-			case '?':
-				break; // getopt() already printed an error
-			default:
-				System.out.print("getopt() returned " + c + "\n");
-			}
+//		while ((c = g.getopt()) != -1)
+//		{
+//			switch(c)
+//			{
+//			case 'd':
+//				arg = g.getOptarg();
+//				System.out.println("You picked " + (char)c + " with argument " + ((arg != null) ? arg : "null"));
+//				if (arg != null) depth = Integer.parseInt(arg);
+//				break;
+//			case 'u':
+//				arg = g.getOptarg();
+//				System.out.println("You picked " + (char)c + " with argument " + ((arg != null) ? arg : "null"));
+//				if(arg != null) url = arg;
+//				break;
+//			case '?':
+//				break; // getopt() already printed an error
+//			default:
+//				System.out.print("getopt() returned " + c + "\n");
+//			}
+//		}
+		if(args.length == 4 && args[0].equals("-d") && Integer.parseInt(args[1]) > 0 && args[2].equals("-u")){
+			depth = Integer.parseInt(args[1]);
+			url = args[3];
+		}
+		else{
+			System.out.println("Usage: -d <depth> -u <url> ");
+			System.exit(0);
 		}
 		
 		System.out.println("Inputted depth: " + depth);
 		System.out.println("Inputted URL: " + url);
-
+		//System.exit(0);
 		new CrawlerApp().startCrawler(depth, url);
 			
 
