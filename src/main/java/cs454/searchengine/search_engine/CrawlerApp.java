@@ -127,9 +127,26 @@ public class CrawlerApp {
 		Getopt g = new Getopt("testprog", args, "d:u:");
 		int c;
 		String arg;
+		
 		String url = "http://www.cs.berkeley.edu/~russell/classes/cs188/f14/"; // default
 		// URL
 		int depth = 2;
+		
+//		if(args.length == 4 && args[0].equals("-d") && Integer.parseInt(args[1]) > 0 && args[2].equals("-u")){
+//			depth = Integer.parseInt(args[1]);
+//			url = args[3];
+//		}
+//		else if(args.length == 4 && args[2].equals("-d") && Integer.parseInt(args[3]) > 0 && args[0].equals("-u")){
+//			depth = Integer.parseInt(args[3]);
+//			url = args[1];
+//		}
+//		else{
+//			System.out.println("Usage: -d <depth> -u <url> ");
+//			System.exit(0);
+//		}
+		
+		
+		
 		
 		while ((c = g.getopt()) != -1)
 		{
