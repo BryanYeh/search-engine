@@ -4,103 +4,133 @@ package cs454.searchengine.search_engine;
  * http://www.java2s.com/Tutorial/Java/0320__Network/Getallhyperlinksfromawebpage.htm
  **/
 
-import java.io.File;
 import java.io.IOException;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Queue;
 import java.util.Set;
 
-import org.codehaus.jackson.JsonGenerationException;
-import org.codehaus.jackson.map.JsonMappingException;
-import org.codehaus.jackson.map.ObjectMapper;
 
 public class App2 {
-	
+
 	public static void main(String args[]) {
 
 		// Initialize Crawler & Extractor
 		Crawler crawler = new Crawler();
-		Extractor extr = new Extractor();
-		ObjectMapper obMap = new ObjectMapper();
-		Map<String, Map<String,String>> linkMap = new HashMap<String, Map<String, String>>();
+		Storage saving = new Storage();
+		Set<String> visitedLinks = new HashSet<String>();
+		Set<CrawledLink> totalLinkSet = new HashSet<CrawledLink>();
 
-		// Initialize local variables
-		Set<String> links = new HashSet<String>();
+
 		Queue<String> linksQueue = new LinkedList<String>();
 		int maxDepth = 2;
 		int depth = 0;
-		int countNextDepth;
+		int countNextDepth = 0;
 		int countCurrDepth = 0;
-		String currentURL = "http://espn.go.com";
-		File jsonFile = new File("metadata.json");
-		
-		// initial extraction
+		String currentURL = "http://www.cs.berkeley.edu/~russell/classes/cs188/f14/"; // default
+																					// URL
+		Set<Link> currentLinkSet = new HashSet<Link>();
+		Map<String, String> metaData = new HashMap<String, String>();
+		Map<String, Map<String, String>> linkMap = new HashMap<String, Map<String, String>>();
+
+		// INITIAL CRAWL
+
 		try {
-			obMap.writeValue(jsonFile, extr.parseExample(currentURL));
-		} catch (JsonGenerationException e) {
-			e.printStackTrace();
-		} catch (JsonMappingException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
+			currentLinkSet = crawler.crawl(currentURL);
+			for(Link l: currentLinkSet){
+				linksQueue.add(l.getUrl());
+			}
 			
+			countNextDepth = currentLinkSet.size();
+
+			System.out.println("--------------" + countNextDepth
+					+ "--------------");
+			
+			String[] fileInfo = saving.saveFiles(currentURL);
+			totalLinkSet.add(new CrawledLink(currentURL, fileInfo[0], new Date().toString(), fileInfo[1], new HashSet<Link>(currentLinkSet)));
+
+			visitedLinks.add(currentURL);
+			saving.store2(totalLinkSet);
+			System.out.println("TOTAL LINKS AFTER INITIAL CRAWL: " + totalLinkSet.size());
+
+		} catch (Exception e1) {
+			e1.printStackTrace();
 		}
 
-		// maxDepth = Integer.parseInt(args[1]);
-		links.addAll(crawler.crawl(currentURL));
-		countNextDepth = links.size();
-		;
-		linksQueue.addAll(links);
-		depth++;
+		// CRAWL LOOP
 
-		Set<String> currentDepth = new HashSet<String>();
+			
 
-		while (depth < maxDepth) {
-			countCurrDepth = 0;
-			currentDepth.clear();
-
-			while (countNextDepth > 0 && !linksQueue.isEmpty()) {
+			while (countNextDepth > 0 && !linksQueue.isEmpty() && depth <= maxDepth && visitedLinks.size() < 200) {
+				System.out.println("--------------ENTERING CRAWL LOOP--------------");
+				
 				currentURL = linksQueue.remove();
-				if (!currentURL.isEmpty()) {
-					currentDepth.addAll(crawler.crawl(currentURL));
-					countNextDepth--;
-					countCurrDepth += currentDepth.size();
-				}
+				
+				System.out.println("--------------VISITED LINKS SIZE: "
+						+ visitedLinks.size());
 
-					System.out.println("ERROR URL: " + currentURL);
-//					CrawledLink currentLink = Extractor2.parseExample(currentURL);
-					Map<String, String> metadataMap = new HashMap<String, String>();
+				if (!visitedLinks.contains(currentURL)) {
+					System.out.println("--------------NEXT URL: " + currentURL
+							+ "--------------");
+					System.out
+							.println("--------------PASSED TEST--------------");
 					try {
-						metadataMap = extr.parseExample(currentURL);
+						currentLinkSet.clear();
+						currentLinkSet = crawler.crawl(currentURL);
+						System.out.println("+++++++++++CURRENT LINK SET SIZE: " + currentLinkSet.size());
+						for(Link l: currentLinkSet){
+							linksQueue.add(l.getUrl());
+						}
+						
+						String[] fileInfo = saving.saveFiles(currentURL);
+						totalLinkSet.add(new CrawledLink(currentURL, fileInfo[0], new Date().toString(), fileInfo[1], new HashSet<Link>(currentLinkSet)) );
+						
+						countNextDepth--;
+						countCurrDepth += currentLinkSet.size();
+						System.out.println("--------------COUNT CURR DEPTH: "
+								+ countCurrDepth + "--------------");
+						System.out.println("--------------COUNT NEXT DEPTH: "
+								+ countNextDepth + "--------------");
+					
+						
+						visitedLinks.add(currentURL);
+						System.out.println("TOTAL LINKS AFTER LOOP CRAWL: " + totalLinkSet.size());
+//						saving.store2(linkMap);
+						saving.store2(totalLinkSet);
 					} catch (Exception e1) {
-						// TODO Auto-generated catch block
 						e1.printStackTrace();
 					}
-					linkMap.put(currentURL, metadataMap);
-					System.out.print(metadataMap.toString());
 					
-					try {
-						obMap.writeValue(jsonFile, linkMap);
-					} catch (JsonGenerationException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					} catch (JsonMappingException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					} catch (IOException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
+					
 
+				}
+				
+				if(countNextDepth == 0){
+					countNextDepth = countCurrDepth;
+					depth++;
+					countCurrDepth = 0;
+				}
 			}
-			linksQueue.addAll(currentDepth);
-			links.addAll(currentDepth);
-			countNextDepth = countCurrDepth;
-			depth++;
+			
+			
+			System.out.println("TOTAL FILES: " + totalLinkSet.size());
+			
+			System.out.println("--------------LINKS QUEUE SIZE: "
+					+ linksQueue.size());
+
+			
+
+			
+
+			System.out.println("--------------I'M WORKING!!!!--------------");
+			
+
 		}
-		System.out.println("NUMBER OF LINKS: " + links.size());
+		
+
 	}
-}
