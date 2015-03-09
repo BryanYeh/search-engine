@@ -1,0 +1,246 @@
+
+
+		
+
+
+
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+	<head>
+	    <title>myCampus Secure Login</title>
+	    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<script type='text/javascript' src='/cas/js/jquery.js'></script>
+	    <style type="text/css" media="screen">@import 'css/cas.css'/**/;</style>
+	    <!--[if gte IE 6]><style type="text/css" media="screen">@import 'css/ie_cas.css';</style><![endif]-->
+	    <script type="text/javascript" src="js/common_rosters.js"></script>
+<script type="text/javascript">
+			(function () {
+					var e = 'abbr article aside audio bb canvas datagrid datalist details dialog figure footer header hgroup mark menu meter nav output progress section time video'.split(' ');
+
+					i = e.length;
+
+					while (i--) {
+						document.createElement(e[i]);
+					}
+				}
+			)();
+		</script>
+<script language="JavaScript" type="text/javascript">
+function newCookie(name,value,days) {
+
+ var days = 365;   // the number at the left reflects the number of days for the cookie to last
+
+                 // modify it according to your needs
+
+ if (days) {
+
+   var date = new Date();
+
+   date.setTime(date.getTime()+(days*24*60*60*1000));
+
+   var expires = "; expires="+date.toGMTString(); }
+
+   else var expires = "";
+
+   document.cookie = name+"="+value+expires+"; path=/"; }
+
+ 
+
+function readCookie(name) {
+
+   var nameSG = name + "=";
+
+   var nuller = '';
+
+  if (document.cookie.indexOf(nameSG) == -1)
+
+    return nuller;
+
+ 
+
+   var ca = document.cookie.split(';');
+
+  for(var i=0; i<ca.length; i++) {
+
+    var c = ca[i];
+
+    while (c.charAt(0)==' ') c = c.substring(1,c.length);
+
+  if (c.indexOf(nameSG) == 0) return c.substring(nameSG.length,c.length); }
+
+    return null; }
+
+ 
+
+function eraseCookie(name) {
+
+  newCookie(name,"",1); }
+
+
+function toMem(a) {
+
+    newCookie('username', document.form.username.value);     // add a new cookie as shown at left for every
+
+    newCookie('password', document.form.password.value);
+
+    newCookie('rememberme', document.form.rememberme.checked);   // field you wish to have the script remember
+
+}
+
+function dontRem(a){
+
+                newCookie('username', '');     // add a new cookie as shown at left for every
+
+    newCookie('password', '');
+
+    newCookie('rememberme', '');
+
+    if(a=="reset"){
+
+                document.form.username.value = '';  // Change the names of the fields at right to match the ones in your form.
+
+                document.form.password.value = '';
+
+                document.form.rememberme.checked = '';
+    }
+}
+//-->
+
+</script>
+<!--[if IE]> 
+
+<link rel="stylesheet" type="text/css" href="css/cas-ie.css" />
+<![endif]-->
+<script type="text/javascript" src="js/cycle.js"></script>
+<script type="text/javascript">
+               $(document).ready(function(){
+                        $('#myslides').cycle({
+                               fx: 'fade',
+                               speed: 5000,
+                              timeout: 3000
+                        });
+                });
+        </script>
+	    
+	</head>
+
+	<body id="cas" onload="init();">
+<div id="myslides"   >
+       <img src="https://mycsula.calstatela.edu/image/image_gallery?img_id=3033812"  />
+       <img src="https://mycsula.calstatela.edu/image/image_gallery?img_id=3033808" />
+       <img src="https://mycsula.calstatela.edu/image/image_gallery?img_id=950718" />
+</div>
+
+
+   <div class="cas-logo"></div>
+	<div id="content">
+    
+
+	
+
+<!--<meta http-equiv="refresh" content="1;url=http://www.calstatela.edu/mycsula/maintenance.htm"> -->
+			<form id="fm1" class="fm-v clearfix" action="/cas/login;jsessionid=53D891D2F1D4AB3CD37E22C66DFC636F.node1?service=https%3A%2F%2Fmycsula.calstatela.edu%2Fpaf%2Fauthorize" method="post">
+			    
+                <div class="box" id="login" >
+                <!-- Congratulations on bringing CAS online!  The default authentication handler authenticates where usernames equal passwords: go ahead, try it out.  
+                    <h2>Enter your NetID and Password</h2> -->
+                    <div class="row">
+                        <label for="username">User Name:</label>
+						
+							
+						
+						<input id="username" name="username" class="required" tabindex="1" accesskey="n" type="text" value="" size="25" autocomplete="false"/>
+						
+                    </div>
+                    <div class="row">
+                        <label for="password">Password:</label>
+						
+						
+						<input id="password" name="password" class="required" tabindex="2" accesskey="p" type="password" value="" size="25" autocomplete="off"/>
+                    </div>
+                   <!-- <div class="row check">
+                        <input id="warn" name="warn" value="true" tabindex="3" accesskey="w" type="checkbox" />
+                        <label for="warn"><span class="accesskey">W</span>arn me before logging me into other sites.</label>
+                    </div> -->
+                    <div class="row btn-row">
+						<input type="hidden" name="lt" value="_c456FD753-B148-217C-A97B-E266A73E1DDF_k11CBA2AA-F7C6-6151-D4CE-45D428974B30" />
+						<input type="hidden" name="_eventId" value="submit" />
+<!--
+<span class="rem-me"><input type="checkbox" tabindex="3" name="rememberme" id="rememberme"> </span><span class="remember-me"><label for="rememberme">Remember Me</label> </span>
+-->
+<span class="login-btn"> <input class="btn-submit" name="submit" accesskey="l" value="LOGIN" tabindex="4" type="submit" /></span>
+
+						
+								<input class="btn-reset" name="reset" accesskey="c" value="CLEAR" tabindex="5" type="reset" />
+						
+
+
+                        
+                    </div>
+                </div>
+               
+	     
+        	</form>
+<div id="tos">
+<!--
+<a href="/web/mycampus/reset-password" title="Reset Password">Reset Password</a> | <a href="/web/mycampus/forgot-password" title="Forgot Password">Forgot Password</a> <br />
+<a href="/web/mycampus/first-time-users" title="First Time Users">First Time Users </a>
+-->
+
+<div style="width:300px;">
+<div style="float:left; margin-right:5px; margin-bottom:3px;"><a href="https://id.calstatela.edu/idm/user/login.jsp"><img src="/cas/images/reset-password-btn.png" border="0"/></a></div>
+<div style="float:left; margin-right:5px; margin-bottom:3px;"><a href="https://id.calstatela.edu/idm/user/login.jsp"><img src="/cas/images/forgot-password-btn.png" border="0"/></a></div>
+<div style="float:left; margin-right:5px; margin-bottom:3px;"><a href="https://mycsula.calstatela.edu/web/mycampus/first-time-users"><img src="/cas/images/first-time-user-btn.png" border="0"/></a></div>
+<div style="float:left; margin-right:5px; margin-bottom:3px;"><a href="https://mycsula.calstatela.edu/web/mycampus/home"><img src="/cas/images/guest-btn.png" border="0"/></a></div>
+</div>
+
+
+
+
+<br /><br />
+By signing onto this portal, you agree to abide by its Terms of Use. Violations could lead to restriction of portal privileges and/or disciplinary action. </div>
+<!-- <div class="footer-logo"><a href="https://www.campuseai.org">Link to CampusEAI</a></div> -->
+</div>
+
+</div>
+
+<!--
+<footer class="toggle-footer">
+  <div class="fwrap">
+    <div class="fl">
+<a href="https://www.campuseai.org/web/campuseai/campuseai-mycampus-terms-of-services">Legal Disclaimer</a> | <a href="https://www.campuseai.org/web/campuseai/campuseai-mycampus-privacy-policy">Privacy Policy</a> | <a href="https://www.campuseai.org/web/campuseai/license-terms">License Terms</a>&nbsp;
+</div>
+ <span class="copyright">Copyright &copy; 2010 CampusEAI Consortium. All rights reserved.</span>
+    <div class="fr"> <a href="https://www.campuseai.org/"> <img border="0" src="https://mycampus7loadtest1.campuseai.org/mycampus-v7-theme/images/custom/campusEAI.gif" alt="in partnership with Campus EAI"> </a> </div>
+    <div class="cl"></div>
+  </div>
+</footer>
+-->
+
+<!--
+<footer class="toggle-footer">
+ <div class="fwrap">
+    <div class="fl">
+<a href="https://www.campuseai.org/web/campuseai/campuseai-mycampus-terms-of-services">Legal Disclaimer</a> | <a href="https://www.campuseai.org/web/campuseai/campuseai-mycampus-privacy-policy">Privacy Policy</a> | <a href="https://www.campuseai.org/web/campuseai/license-terms">License Terms</a>&nbsp;
+</div><span class="copyright">CampusEAI Consortium &copy; 2011 : &nbsp;
+ </span>
+    <div class="fr"> <a href="https://www.campuseai.org/"> <img border="0" alt="in partnership with Campus EAI" src="/csula-v7-theme/images/custom/campusEAI.gif"> </a> </div><div class="cl"></div></div></footer>
+-->
+ <script type="text/javascript" language="javascript">
+
+<!--
+
+//document.form.username.value = readCookie("username");  
+
+//document.form.password.value = readCookie("password");
+
+//document.form.rememberme.checked = readCookie("rememberme");
+
+//-->
+
+</script>
+</body>
+</html>

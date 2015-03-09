@@ -182,7 +182,6 @@ public class Storage {
 		try {
 			url = new URL(urlString);
 		} catch (MalformedURLException e1) {
-			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
 		HttpURLConnection connection;
@@ -195,7 +194,6 @@ public class Storage {
 			System.out.println(contentType);
 			
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
