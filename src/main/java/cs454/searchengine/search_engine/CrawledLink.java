@@ -5,6 +5,8 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import org.xml.sax.ContentHandler;
+
 public class CrawledLink{
 	
 	private String linkURL;
@@ -13,6 +15,8 @@ public class CrawledLink{
 	private String mimeType;
 	private Map<String, String> metadata;
 	private Set<Link> listOfLinks;
+	private Map<String, Integer> wordMap;
+	private Set<String> wordSet;
 	
 	public CrawledLink(){
 		metadata = new HashMap<String,String>();
@@ -95,6 +99,22 @@ public class CrawledLink{
 	public String toString(){
 		return "Link: " + linkURL + "-- Local Path: " + localPath + "-- Date: " + lastPullDate + "  -- mimeType: " + mimeType;
 		
+	}
+
+	public Map<String, Integer> getWordMap() {
+		return wordMap;
+	}
+
+	public void setWordMap(Map<String, Integer> wordMap) {
+		this.wordMap = wordMap;
+	}
+
+	public Set<String> getWordSet() {
+		return wordSet;
+	}
+
+	public void setWordSet(Set<String> wordSet) {
+		this.wordSet = wordSet;
 	}
 
 }
