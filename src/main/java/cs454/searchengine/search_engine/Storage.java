@@ -8,6 +8,7 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLConnection;
 import java.util.Set;
 import java.util.UUID;
 
@@ -36,62 +37,6 @@ public class Storage {
 			e.printStackTrace();
 		}
 	}
-	
-	
-	//http://www.programcreek.com/2012/12/download-image-from-url-in-java/
-	
-	public static void saveImage(String imageUrl) throws IOException {
-		URL url = new URL(imageUrl);
-		String fileName = url.getFile();
-		String destName = "./figures" + fileName.substring(fileName.lastIndexOf("/"));
-		System.out.println(destName);
-	 
-		InputStream is = url.openStream();
-		OutputStream os = new FileOutputStream(destName);
-	 
-		byte[] b = new byte[2048];
-		int length;
-	 
-		while ((length = is.read(b)) != -1) {
-			os.write(b, 0, length);
-		}
-	 
-		is.close();
-		os.close();
-	}
-	
-	
-//	public String downloadFiles(String fileUrl) throws IOException {
-//		/**
-//		 * Source:
-//		 * http://stackoverflow.com/questions/17101276/java-download-all-files-and-folders-in-a-directory
-//		 * http://stackoverflow.com/questions/3024002/how-to-create-a-folder-in-java
-//		 * http://stackoverflow.com/questions/9658297/java-how-to-create-a-file-in-a-directory-using-relative-path
-//		 * http://www.java2s.com/Tutorial/Java/0180__File/Removefileordirectory.htm
-//		 * http://stackoverflow.com/questions/4875064/jsoup-how-to-get-an-images-absolute-url
-//		 * http://www.avajava.com/tutorials/lessons/how-do-i-save-an-image-from-a-url-to-a-file.html
-//		 * http://stackoverflow.com/questions/3987921/not-able-to-delete-the-directory-through-java
-//		 * 
-//		 */
-//
-////		String[] folders = fileUrl.split("/");
-////
-////		try{
-////			if(folder.mkdirs()) { 
-////				System.out.println("Directory Created");
-////			} else {
-////				System.out.println("Directory exists");
-////			}
-////		} catch(Exception e){
-////			e.printStackTrace();
-////		}
-//		
-//		
-//		String file = saveFiles(fileUrl);
-//		
-//		System.out.println("File Saved: " + file);
-//		return file;
-//	}
 
 	public String[] saveFiles(String fileUrl){
 		
@@ -101,10 +46,8 @@ public class Storage {
 		String contentType = "";
 		try {
 			fileURL2 = new URL(fileUrl);
-			contentType = getContentType(fileUrl);
-			System.out.println("URL: " + fileUrl + " --------- Content-Type" + contentType);
 			
-			if(contentType.contains("text/html")){
+			if(isURL(fileUrl)){
 				savedFile = new File(directoryFile, UUID.randomUUID().toString() + ".html");
 				savedFile.createNewFile();
 			}
@@ -138,6 +81,9 @@ public class Storage {
 					fileName = UUID.randomUUID().toString() + ".txt";
 				else if(fileUrl.contains(".tiff"))
 					fileName = UUID.randomUUID().toString() + ".tiff";
+				else{
+					return null;
+				}
 				
 				//doc|ppt|pdf|xls|mp3|png|gif|bmp|tiff|jpg|jpeg|txt
 				
@@ -164,7 +110,7 @@ public class Storage {
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
-			e.printStackTrace();
+			return null;
 		}
 		
 		String [] info = new String[3];
@@ -176,31 +122,28 @@ public class Storage {
 	}
 	
 	
-	public String getContentType (String urlString){
-		URL url = null;
-		String contentType = "";
+	public boolean isURL(String urlString){
+		URL url;
 		try {
 			url = new URL(urlString);
+			URLConnection connection;
+			connection = url.openConnection();
+			 if (!connection.getContentType().startsWith("text/html")){
+				 return false;
+			 }
+			 else{
+				 return true;
+			 }
 		} catch (MalformedURLException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
-		}
-		HttpURLConnection connection;
-		try {
-			connection = (HttpURLConnection)  url.openConnection();
-			connection.setRequestMethod("HEAD");
-			connection.connect();
-			contentType = connection.getContentType();
-			
-			System.out.println(contentType);
-			
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
-		return contentType;
-	}
-
+		return false;
+}
+	
 }
 
