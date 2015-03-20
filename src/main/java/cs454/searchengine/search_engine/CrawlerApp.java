@@ -59,7 +59,7 @@ public class CrawlerApp {
 		// CRAWL LOOP
 
 		while (countNextDepth > 0 && !linksQueue.isEmpty() && depth <= maxDepth
-				&& visitedLinks.size() < 200) {
+				&& visitedLinks.size() < 20000) {
 			System.out
 					.println("--------------ENTERING CRAWL LOOP--------------");
 

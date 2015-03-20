@@ -15,6 +15,7 @@ import java.util.UUID;
 import org.codehaus.jackson.JsonGenerationException;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
+import org.codehaus.jackson.map.SerializationConfig;
 
 public class Storage {
 	File jsonFile = new File("metadata.json");
@@ -23,12 +24,13 @@ public class Storage {
 	
 	public Storage(){
 		directoryFile.mkdir();
+		obMap.enable(SerializationConfig.Feature.INDENT_OUTPUT);
 	}
 	
 	public void store2(Set<CrawledLink> linkMap) {
 		try {
 			System.out.println("Saving to JSON");
-			obMap.writeValue(jsonFile, linkMap);
+			obMap.writerWithDefaultPrettyPrinter().writeValue(jsonFile, linkMap);
 		} catch (JsonGenerationException e) {
 			e.printStackTrace();
 		} catch (JsonMappingException e) {
