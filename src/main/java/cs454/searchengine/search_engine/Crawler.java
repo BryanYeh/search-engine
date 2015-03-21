@@ -1,16 +1,9 @@
 package cs454.searchengine.search_engine;
 
 import java.io.IOException;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLConnection;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 
-import org.jsoup.Connection.Response;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -25,8 +18,8 @@ public class Crawler {
 		try {
 			doc = Jsoup.connect(urlString).ignoreHttpErrors(true).get();
 			Elements links = doc.select("a[href]");
-			Elements docFiles = doc
-					.select("a[href~=(?i).(doc|ppt|pdf|xls|mp3|png|gif|bmp|tiff|jpg|jpeg|txt(?x)$)]");
+//			Elements docFiles = doc
+//					.select("a[href~=(?i).(doc|ppt|pdf|xls|mp3|png|gif|bmp|tiff|jpg|jpeg|txt(?x)$)]");
 			Elements files = doc.select("[src]");
 
 			for (Element e : links) {
@@ -72,20 +65,20 @@ public class Crawler {
 		return linkSet;
 	}
 
-	public static void main(String args[]) {
-		// new
-		// Crawler().crawl("https://www.washington.edu/doit/programs/accesscollege/faculty-room/resources/examples-powerpoint-presentations");
+//	public static void main(String args[]) {
+//		 new
+//		 Crawler().crawl("https://www.washington.edu/doit/programs/accesscollege/faculty-room/resources/examples-powerpoint-presentations");
 //		new Crawler().crawl("http://www.calstatela.edu/ecst/cs/student-handbook");
 //		String urlString = "http://www.calstatela.edu/sites/default/files/groups/Department%20of%20Computer%20Science/undergraduate_student_handbook_0.docx";
-		String urlString = "https://www.washington.edu/doit/programs/accesscollege/faculty-room/resources/examples-powerpoint-presentations";
-
-		
-		
-		
-		
-		
-		// new
-		// Crawler().crawl("http://www.noiseaddicts.com/free-samples-mp3/?id=280&desc=American Bison");
-
-	}
+//		String urlString = "https://www.washington.edu/doit/programs/accesscollege/faculty-room/resources/examples-powerpoint-presentations";
+//
+//		
+//		
+//		
+//		
+//		
+//		// new
+//		// Crawler().crawl("http://www.noiseaddicts.com/free-samples-mp3/?id=280&desc=American Bison");
+//
+//	}
 }
